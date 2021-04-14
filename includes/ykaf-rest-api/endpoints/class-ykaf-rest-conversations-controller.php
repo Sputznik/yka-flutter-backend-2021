@@ -5,7 +5,7 @@ class YKAF_Conversations_Controller extends WP_REST_Controller {
 * Constructor.
  */
   public function __construct() {
-    $this->namespace = 'ykaf/v1';
+    $this->namespace = 'yka/v1';
     $this->rest_base = 'conversations';
     $this->post_type = 'conversation';
   }
