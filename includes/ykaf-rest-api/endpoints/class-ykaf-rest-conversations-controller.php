@@ -102,11 +102,9 @@ class YKAF_Conversations_Controller extends WP_REST_Controller {
 
     $data = array(
       // 'id'                => $post->ID,
-      'title'             => $post->post_title,
-      'content'           => $post->post_content,
-      'featured_img'      => get_the_post_thumbnail_url($post->ID, 'full'),
-      'audio_attachment'  => '',
-      // 'date'         => date( "F j, Y", strtotime($post->post_date))
+      'title'        => $post->post_title,
+      'content'      => $post->post_content,
+      'attachments'  => ''
     );
 
     return $data;
