@@ -1,0 +1,5 @@
+
+/* AUTOCOMPLETE */
+[data-behaviour~=ykaf-autocomplete]{ margin-top: 20px; }
+[data-behaviour~=ykaf-autocomplete] label{ display: block; margin-bottom: 10px; }
+[data-behaviour~=ykaf-autocomplete] input[type=text]{ width: 100%; max-width: 400px;}
