@@ -1,5 +1,5 @@
 <?php
-class yka_Conversations_Controller extends WP_REST_Controller {
+class YKA_Conversations_Controller extends WP_REST_Controller {
 
   /**
 * Constructor.
