@@ -1,15 +1,15 @@
 <?php
 
-	class YKAF_AUTHOR_METABOX extends YKAF_BASE{
+	class YKA_AUTHOR_METABOX extends YKA_BASE{
 
 		function __construct(){
 
-			add_filter( 'ykaf-admin-meta-box-fields', function( $fields ){
-				$fields['ykaf-author'] = array( $this, 'render_meta_box' );
+			add_filter( 'yka-admin-meta-box-fields', function( $fields ){
+				$fields['yka-author'] = array( $this, 'render_meta_box' );
 				return $fields;
 			} );
 
-			add_action( 'ykaf-save-meta-box', array( $this, 'save_meta_box' ), 10, 1 );
+			add_action( 'yka-save-meta-box', array( $this, 'save_meta_box' ), 10, 1 );
 
 			add_action( 'wp_ajax_users_json', array( $this, 'get_users_json' ) );
 
@@ -50,7 +50,7 @@
 				'url'	=> admin_url('admin-ajax.php?action=users_json')
 			);
 
-			echo "<div data-behaviour='ykaf-autocomplete' data-field='".wp_json_encode( $field )."'></div>";
+			echo "<div data-behaviour='yka-autocomplete' data-field='".wp_json_encode( $field )."'></div>";
 
 		}
 
@@ -66,4 +66,4 @@
 		}
 	}
 
-	YKAF_AUTHOR_METABOX::getInstance();
+	YKA_AUTHOR_METABOX::getInstance();

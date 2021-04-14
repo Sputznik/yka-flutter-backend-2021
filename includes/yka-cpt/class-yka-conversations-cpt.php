@@ -1,18 +1,18 @@
 <?php
 
-class YKAF_CONVERSATIONS extends YKAF_BASE{
+class YKA_CONVERSATIONS extends YKA_BASE{
 
 	function __construct(){
 
-		add_filter( 'ykaf-admin-meta-box-fields', function( $fields ){
-			$fields['ykaf-conversation'] = array( $this, 'render_meta_box' );
+		add_filter( 'yka-admin-meta-box-fields', function( $fields ){
+			$fields['yka-conversation'] = array( $this, 'render_meta_box' );
 			return $fields;
 		} );
 
 
-		add_action( 'ykaf-save-meta-box', array( $this, 'save_meta_box' ), 10, 1 );
+		add_action( 'yka-save-meta-box', array( $this, 'save_meta_box' ), 10, 1 );
 
-		add_action( 'wp_ajax_ykaf_conversations_json', array( $this, 'get_json' ) );
+		add_action( 'wp_ajax_yka_conversations_json', array( $this, 'get_json' ) );
 
     /* CREATING CPT USING ORBIT BUNDLE PLUGIN AS DEPENDANCY */
   	add_filter( 'orbit_post_type_vars', function( $post_types ){
@@ -49,11 +49,11 @@ class YKAF_CONVERSATIONS extends YKAF_BASE{
 	}
 
 	function save_meta_box( $post_id ) {
-		if( isset( $_POST['ykaf_conversation_id'] ) ){
+		if( isset( $_POST['yka_conversation_id'] ) ){
 			global $wpdb;
 			$wpdb->update(
 				$wpdb->posts,
-				array( 'post_parent' => $_POST['ykaf_conversation_id'] ),
+				array( 'post_parent' => $_POST['yka_conversation_id'] ),
 				array( 'ID' => $post_id ),
 				array( '%d' ),
 				array( '%d' )
@@ -65,13 +65,13 @@ class YKAF_CONVERSATIONS extends YKAF_BASE{
 	function render_meta_box( $post ){
 		$field = array(
 			'label'               => 'Select Conversation',
-			'slug'	              => 'ykaf_conversation_id',
+			'slug'	              => 'yka_conversation_id',
 			'value'	              => $post->post_parent,
 			'placeholder'         => 'Type Something',
 			'autocomplete_value'	=> $post->post_parent ? get_the_title( $post->post_parent ) : "",
-			'url'	                => admin_url('admin-ajax.php?action=ykaf_conversations_json')
+			'url'	                => admin_url('admin-ajax.php?action=yka_conversations_json')
 		);
-		echo "<div data-behaviour='ykaf-autocomplete' data-field='".wp_json_encode( $field )."'></div>";
+		echo "<div data-behaviour='yka-autocomplete' data-field='".wp_json_encode( $field )."'></div>";
 	}
 
 	function get_json(){
@@ -87,4 +87,4 @@ class YKAF_CONVERSATIONS extends YKAF_BASE{
 
 
 }
-YKAF_CONVERSATIONS::getInstance();
+YKA_CONVERSATIONS::getInstance();

@@ -1,0 +1,5 @@
+
+/* AUTOCOMPLETE */
+[data-behaviour~=yka-autocomplete]{ margin-top: 20px; }
+[data-behaviour~=yka-autocomplete] label{ display: block; margin-bottom: 10px; }
+[data-behaviour~=yka-autocomplete] input[type=text]{ width: 100%; max-width: 400px;}

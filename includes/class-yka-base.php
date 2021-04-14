@@ -3,7 +3,7 @@
 * ABSTRACT MODEL THAT HANDLES SINGULAR DESIGN PATTERN
 */
 
-class YKAF_BASE{
+class YKA_BASE{
 
 	private static $instance = null;
 

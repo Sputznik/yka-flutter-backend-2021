@@ -2,7 +2,7 @@
 
 	$modules = array(
 		'class-author-meta-box.php',
-		'class-ykaf-admin.php'
+		'class-yka-admin.php'
 	);
 
 	foreach($modules as $module){

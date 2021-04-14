@@ -1,7 +1,7 @@
 /*
 * AUTOCOMPLETE WRAPPER BUILT ON JQUERY AUTOCOMPLETE
 */
-jQuery.fn.ykaf_autocomplete = function(){
+jQuery.fn.yka_autocomplete = function(){
 
 	return this.each(function() {
 
@@ -35,7 +35,7 @@ jQuery.fn.ykaf_autocomplete = function(){
 			if( field['placeholder'] != undefined ){
 				$input.attr( 'placeholder', field['placeholder'] );
 			}
-			
+
 			if( field['autocomplete_value'] != undefined ){
 				$input.val( field['autocomplete_value'] );
 			}
@@ -73,5 +73,5 @@ jQuery.fn.ykaf_autocomplete = function(){
 };
 
 jQuery( document ).ready( function(){
-  jQuery('[data-behaviour~=ykaf-autocomplete]').ykaf_autocomplete();
+  jQuery('[data-behaviour~=yka-autocomplete]').yka_autocomplete();
 });

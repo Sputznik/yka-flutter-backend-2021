@@ -1,16 +1,16 @@
 <?php
 
-class YKAF_COMMENTS extends YKAF_BASE{
+class YKA_COMMENTS extends YKA_BASE{
 
 	function __construct(){
 
     /* CREATING CPT USING ORBIT BUNDLE PLUGIN AS DEPENDANCY */
   	add_filter( 'orbit_post_type_vars', function( $post_types ){
-      $post_types['ykaf-comment'] = array(
-    		'slug' 		=> 'ykaf-comment',
+      $post_types['yka-comment'] = array(
+    		'slug' 		=> 'yka-comment',
     		'labels'	=> array(
-    			'name' 					=> 'YKAF Comments',
-    			'singular_name' => 'YKAF Comment',
+    			'name' 					=> 'YKA Comments',
+    			'singular_name' => 'YKA Comment',
 					'add_new'       => 'Add New',
 					'edit_item'			=> 'Edit Comment',
 					'add_new_item'  => 'Add New',
@@ -26,4 +26,4 @@ class YKAF_COMMENTS extends YKAF_BASE{
 	}
 
 }
-YKAF_COMMENTS::getInstance();
+YKA_COMMENTS::getInstance();
