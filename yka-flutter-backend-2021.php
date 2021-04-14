@@ -20,6 +20,7 @@ $inc_files = array(
   'includes/class-ykaf-base.php',																	// BASE CLASS THAT PROVIDES SINGLETON DESIN PATTERN
   'includes/ykaf-cpt/ykaf-cpt.php',																// YKA CUSTOM POST TYPES
   'includes/ykaf-admin/ykaf-admin.php',														// ADMIN MODULES
+  'includes/ykaf-rest-api/ykaf-rest-api.php'											// REST API
 );
 
 
