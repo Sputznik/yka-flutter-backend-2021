@@ -1,5 +1,5 @@
 <?php
-class YKA_Conversations_Controller extends WP_REST_Controller {
+class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
 
   /**
 * Constructor.
@@ -21,7 +21,14 @@ class YKA_Conversations_Controller extends WP_REST_Controller {
         'callback'            => array( $this, 'get_items' ),
         'permission_callback' => array( $this, 'get_items_permissions_check' ),
         'args'                => $this->get_collection_params(),
-      )
+      ),
+      array(
+        'methods'             => WP_REST_Server::CREATABLE,
+        'callback'            => array( $this, 'create_item' ),
+        'permission_callback' => array( $this, 'create_item_permissions_check' ),
+        'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
+      ),
+      'schema' => array( $this, 'get_public_item_schema' )
     ) );
   }
 
