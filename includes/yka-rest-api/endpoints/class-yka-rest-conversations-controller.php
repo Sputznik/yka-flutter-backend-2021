@@ -15,6 +15,12 @@ class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
    * Register the component routes.
    */
   public function register_routes() {
+
+    $schema        = $this->get_item_schema();
+		$get_item_args = array(
+			'context' => $this->get_context_param( array( 'default' => 'view' ) ),
+		);
+
     register_rest_route( $this->namespace, '/' . $this->rest_base, array(
       array(
         'methods'             => WP_REST_Server::READABLE,
@@ -30,6 +36,44 @@ class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
       ),
       'schema' => array( $this, 'get_public_item_schema' )
     ) );
+
+
+    register_rest_route(
+      $this->namespace,
+      '/' . $this->rest_base . '/(?P<id>[\d]+)',
+      array(
+        array(
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => array( $this, 'get_item' ),
+            'permission_callback' => array( $this, 'get_items_permissions_check' ),
+            'args'                => array(
+              'context' => $this->get_context_param( array(
+                  'default' => 'view',
+              ) ),
+            ),
+        ),
+        array(
+          'methods'             => WP_REST_Server::EDITABLE,
+          'callback'            => array( $this, 'update_item' ),
+          'permission_callback' => array( $this, 'update_item_permissions_check' ),
+          'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+        ),
+        array(
+        'methods'             => WP_REST_Server::DELETABLE,
+        'callback'            => array( $this, 'delete_item' ),
+        'permission_callback' => array( $this, 'delete_item_permissions_check' ),
+        'args'                => array(
+          'force' => array(
+            'type'        => 'boolean',
+            'default'     => false,
+            'description' => __( 'Whether to bypass trash and force deletion.' ),
+          ),
+        ),
+      ),
+        'schema' => array( $this, 'get_public_item_schema' ),
+      )
+    );
+
   }
 
 
@@ -76,33 +120,6 @@ class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
 
 
   /**
-  * Check if a given request has access to post items.
-  */
-  public function get_items_permissions_check( $request ) {
-    return true;
-  }
-
-  /**
-  * Get the query params for collections
-  */
-  public function get_collection_params() {
-    return array(
-      'page'     => array(
-        'description'       => 'Current page of the collection.',
-        'type'              => 'integer',
-        'default'           => 1,
-        'sanitize_callback' => 'absint',
-      ),
-      'per_page' => array(
-        'description'       => 'Maximum number of items to be returned in result set.',
-        'type'              => 'integer',
-        'default'           => 10,
-        'sanitize_callback' => 'absint',
-      ),
-    );
-  }
-
-  /**
    * Prepares post data for return as an object.
    */
   public function prepare_item_for_response( $post, $request ) {
@@ -111,7 +128,7 @@ class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
       // 'id'                => $post->ID,
       'title'        => $post->post_title,
       'content'      => $post->post_content,
-      'attachments'  => ''
+      'attachments'  => get_attached_media('audio',$post->ID)
     );
 
     return $data;
