@@ -125,7 +125,7 @@ class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
   public function prepare_item_for_response( $post, $request ) {
 
     $data = array(
-      // 'id'                => $post->ID,
+      'id'           => $post->ID,
       'title'        => $post->post_title,
       'content'      => $post->post_content,
       'attachments'  => get_attached_media('audio',$post->ID)
