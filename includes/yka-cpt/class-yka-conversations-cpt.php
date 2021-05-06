@@ -14,8 +14,8 @@ class YKA_CONVERSATIONS extends YKA_BASE{
 
 		add_action( 'wp_ajax_yka_conversations_json', array( $this, 'get_json' ) );
 
-    /* CREATING CPT USING ORBIT BUNDLE PLUGIN AS DEPENDANCY */
-  	add_filter( 'orbit_post_type_vars', function( $post_types ){
+    /* CREATING CPT USING YKA CPT BASE */
+  	add_filter( 'yka_post_type_vars', function( $post_types ){
       $post_types['conversation'] = array(
     		'slug' 		=> 'conversation',
     		'labels'	=> array(
@@ -24,12 +24,13 @@ class YKA_CONVERSATIONS extends YKA_BASE{
 					'add_new'       => 'Add New',
 					'edit_item'			=> 'Edit Conversation',
 					'add_new_item'  => 'Add New',
-					'all_items'     =>  'All Conversations'
+					'all_items'     => 'All Conversations'
     		),
 				'menu_icon'	=>	'dashicons-groups',
     		'public'		=> true,
-    		'supports'	=> array( 'title', 'editor', 'thumbnail', 'author' )
-    	);
+    		'supports'	=> array( 'title', 'editor', 'thumbnail', 'author' ),
+				'show_in_rest' => true
+			);
       return $post_types;
     } );
 

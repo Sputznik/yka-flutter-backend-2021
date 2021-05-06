@@ -4,8 +4,8 @@ class YKA_COMMENTS extends YKA_BASE{
 
 	function __construct(){
 
-    /* CREATING CPT USING ORBIT BUNDLE PLUGIN AS DEPENDANCY */
-  	add_filter( 'orbit_post_type_vars', function( $post_types ){
+    /* CREATING CPT USING YKA CPT BASE */
+  	add_filter( 'yka_post_type_vars', function( $post_types ){
       $post_types['yka-comment'] = array(
     		'slug' 		=> 'yka-comment',
     		'labels'	=> array(
@@ -18,8 +18,9 @@ class YKA_COMMENTS extends YKA_BASE{
     		),
 				'menu_icon'	=>	'dashicons-format-chat',
     		'public'		=> true,
-    		'supports'	=> array( 'title', 'editor', 'thumbnail' )
-    	);
+    		'supports'	=> array( 'title', 'editor', 'thumbnail' ),
+				'show_in_rest' => true
+			);
       return $post_types;
     } );
 
