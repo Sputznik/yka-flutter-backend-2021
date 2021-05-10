@@ -128,10 +128,29 @@ class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
       'id'           => $post->ID,
       'title'        => $post->post_title,
       'content'      => $post->post_content,
-      'attachments'  => get_attached_media('audio',$post->ID)
+      'attachments'  => array(
+        'images'  => $this->get_attached_images( $post->ID ),
+        'audio'   => get_attached_media('audio' , $post->ID )
+      )
     );
 
     return $data;
+  }
+
+  // RETURNS THE LIST OF IMAGES ATTACHED TO A CONVERSATION
+  public function get_attached_images( $postId ){
+    $attached_images = get_attached_media('image', $postId);
+    $img_arr = array();
+    foreach ( $attached_images as $image ) {
+      $img = array(
+        'id' => $image->ID,
+        'url' => wp_get_attachment_url( $image->ID ),
+        'mime_type' => $image->post_mime_type
+      );
+      array_push( $img_arr, $img );
+    }
+
+    return $img_arr;
   }
 
 
