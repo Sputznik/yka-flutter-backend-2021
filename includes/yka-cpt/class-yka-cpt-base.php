@@ -54,6 +54,7 @@ class YKA_CPT_BASE extends YKA_BASE{
       'query_var' 					=> true,
       'rewrite' 						=> $post_type['rewrite'],
       'has_archive' 				=> true,
+      'hierarchical'       => isset( $post_type['hierarchical'] ) && $post_type['hierarchical'] ? $post_type['hierarchical'] : false,
       'menu_icon'						=> isset( $post_type['menu_icon'] ) && $post_type['menu_icon'] ? $post_type['menu_icon'] : 'dashicons-images-alt',
       'taxonomies'					=> isset( $post_type['taxonomies'] ) ? $post_type['taxonomies'] : array(),
       'supports'						=>	$post_type['supports'],

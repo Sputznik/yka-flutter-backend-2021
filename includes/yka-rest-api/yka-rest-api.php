@@ -1,7 +1,8 @@
 <?php
 
 	$controllers = array(
-		'class-yka-rest-conversations-controller.php'
+		'class-yka-rest-conversations-controller.php',
+		'class-yka-rest-comments-controller.php'
 	);
 
 	foreach( $controllers as $controller ){
@@ -12,6 +13,11 @@
 
 
 	add_action( 'rest_api_init', function () {
-	  $controller = new YKA_Conversations_Controller;
-	  $controller->register_routes();
+
+		$conversations_controller = new YKA_Conversations_Controller;
+	  $conversations_controller->register_routes();
+
+		$comments_controller = new YKA_Comments_Controller;
+	  $comments_controller->register_routes();
+
 	} );
