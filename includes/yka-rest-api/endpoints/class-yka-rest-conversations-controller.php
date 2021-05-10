@@ -129,29 +129,28 @@ class YKA_Conversations_Controller extends WP_REST_Posts_Controller{
       'title'        => $post->post_title,
       'content'      => $post->post_content,
       'attachments'  => array(
-        'images'  => $this->get_attached_images( $post->ID ),
-        'audio'   => get_attached_media('audio' , $post->ID )
+        'images'   => $this->get_conversation_attachments( $post->ID, 'image' ),
+        'audio'    => $this->get_conversation_attachments( $post->ID, 'audio' )
       )
     );
 
     return $data;
   }
 
-  // RETURNS THE LIST OF IMAGES ATTACHED TO A CONVERSATION
-  public function get_attached_images( $postId ){
-    $attached_images = get_attached_media('image', $postId);
-    $img_arr = array();
-    foreach ( $attached_images as $image ) {
-      $img = array(
-        'id' => $image->ID,
-        'url' => wp_get_attachment_url( $image->ID ),
-        'mime_type' => $image->post_mime_type
+  // RETURNS THE LIST OF ATTACHMENTS ATTACHED TO A CONVERSATION BASED ON THE ATTACHMENT TYPE
+  public function get_conversation_attachments( $postId, $attachment_type ){
+    $attachments = get_attached_media( $attachment_type, $postId );
+    $attachments_arr = array();
+    foreach ( $attachments as $attachment ) {
+      $conv_attachment = array(
+        'id' => $attachment->ID,
+        'url' => wp_get_attachment_url( $attachment->ID ),
+        'mime_type' => $attachment->post_mime_type
       );
-      array_push( $img_arr, $img );
+      array_push( $attachments_arr, $conv_attachment );
     }
 
-    return $img_arr;
+    return $attachments_arr;
   }
-
 
 }
