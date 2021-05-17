@@ -5,8 +5,6 @@ function yka_remove_extra_data($data, $post, $context) {
   if( $context !== 'view' || is_wp_error( $data ) ) {
 
     $fields_arr = array(
-      'date',
-      'date_gmt',
       'modified',
       'modified_gmt',
       'featured_media',
