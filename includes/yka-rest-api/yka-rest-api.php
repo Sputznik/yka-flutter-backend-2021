@@ -23,9 +23,16 @@
 	  $comments_controller->register_routes();
 
 		// CPT CONVERSATION
+		register_rest_field( 'conversation', 'number_of_bookmarks', array(
+ 				'get_callback'    => function( $object, $field_name, $request ){
+					return '0';
+				},
+ 				'schema'          => null,
+ 			)
+  	);
 		register_rest_field( 'conversation', 'tags', array(
  				'get_callback'    => function( $object, $field_name, $request ){
-					return wp_get_object_terms( $object['id'], 'topics', array( 'fields' => 'names' ) );;
+					return wp_get_object_terms( $object['id'], 'topics', array( 'fields' => 'names' ) );
 				},
  				'schema'          => null,
  			)
