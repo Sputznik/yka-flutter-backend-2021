@@ -41,7 +41,7 @@ class YKA_CONVERSATIONS extends YKA_BASE{
 		    'label'			  => 'Topics',
 		    'slug' 			  => 'topics',
 		    'post_types'	=> array( 'conversation' ),
-				// 'show_in_rest'	=> true
+				'show_in_rest'	=> true
 			);
 
 		  return $yka_tax;
