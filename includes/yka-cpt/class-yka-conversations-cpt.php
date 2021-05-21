@@ -34,16 +34,17 @@ class YKA_CONVERSATIONS extends YKA_BASE{
       return $post_types;
     } );
 
-		/* PUSH INTO THE GLOBAL VARS OF ORBIT TAXNOMIES */
-		add_filter( 'orbit_taxonomy_vars', function( $orbit_tax ){
+		/* PUSH INTO THE GLOBAL VARS OF YKA TAXNOMIES */
+		add_filter( 'yka_taxonomy_vars', function( $yka_tax ){
 
-			$orbit_tax['topics']	= array(
+			$yka_tax['topics']	= array(
 		    'label'			  => 'Topics',
 		    'slug' 			  => 'topics',
-		    'post_types'	=> array( 'conversation' )
-		  );
+		    'post_types'	=> array( 'conversation' ),
+				// 'show_in_rest'	=> true
+			);
 
-		  return $orbit_tax;
+		  return $yka_tax;
 
 		} );
 
