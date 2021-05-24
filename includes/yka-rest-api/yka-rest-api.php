@@ -84,8 +84,28 @@
 	function get_yka_comments_data( $object ){
 		return array(
 			'number_of_comments'    => count( get_pages( array( 'child_of' => $object['id'], 'post_type' => 'yka-comment') ) ),
-			'number_of_users'  			=> ''
+			'number_of_users'  			=> count( get_yka_commented_users( $object['id'] ) )
 		);
+	}
+
+	function get_yka_commented_users( $comment_parent_id ){
+		global $wpdb;
+
+		$authors = $wpdb->get_results("
+	    SELECT
+	        {$wpdb->prefix}users.ID
+	    FROM
+	        wp_users
+	    INNER JOIN {$wpdb->prefix}posts ON {$wpdb->prefix}users.ID = {$wpdb->prefix}posts.post_author
+	    WHERE
+	        {$wpdb->prefix}posts.post_type = 'yka-comment' AND
+					{$wpdb->prefix}posts.post_status = 'publish' AND {$wpdb->prefix}posts.post_parent = $comment_parent_id
+	    GROUP BY
+	        {$wpdb->prefix}users.ID;
+	  ");
+
+		return $authors;
+
 	}
 
 	function get_attachments_list( $object ) {
