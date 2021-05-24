@@ -21,7 +21,8 @@ $inc_files = array(
   'includes/yka-cpt/yka-cpt.php',																    // YKA CUSTOM POST TYPES
   'includes/yka-admin/yka-admin.php',														   // ADMIN MODULES
   'includes/yka-rest-authentication/yka-rest-authentication.php',  // AUTHENTICATION
-  'includes/yka-rest-api/yka-rest-api.php'											  // REST API
+  'includes/yka-rest-api/yka-rest-api.php',											  // REST API
+  'includes/db/class-yka-bookmarks-db.php'                       // BOOKMARKS DB
 );
 
 
