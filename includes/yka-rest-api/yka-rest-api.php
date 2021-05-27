@@ -64,6 +64,18 @@
 
 
  	 // CPT YKA-COMMENT
+	 register_rest_field( 'yka-comment', 'quoted-comment', array(
+ 				'get_callback'    => 'get_quoted_comment',
+ 				'update_callback' => function( $value, $post, $field_name ) {
+					update_post_meta( $post->ID, $field_name, $value );
+				},
+				'schema'          => array(
+			    'description'   => 'Quoted comment id',
+			    'type'          => array('integer'),
+					'context'       => array( 'view', 'edit' )
+				),
+			)
+ 	 );
 	 register_rest_field( 'yka-comment', 'attachments', array(
  				'get_callback'    => 'get_attachments_list',
  				'schema'          => null,
@@ -78,6 +90,12 @@
 
 
 	} );
+
+	function get_quoted_comment( $post,  $field_name, $request ){
+		$quoted_comment = (int) get_post_meta( $post['id'], $field_name, true );
+    $quoted_comment = !empty( $quoted_comment ) ? $quoted_comment : null;
+		return $quoted_comment;
+	}
 
 	function get_yka_author_data( $object ){
 		return array(
