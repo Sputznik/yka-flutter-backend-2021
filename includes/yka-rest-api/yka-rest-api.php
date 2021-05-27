@@ -34,7 +34,14 @@
  				'get_callback'    => function( $object, $field_name, $request ){
 					return wp_get_object_terms( $object['id'], 'topics', array( 'fields' => 'names' ) );
 				},
- 				'schema'          => null,
+				'update_callback'	=> function( $value, $post, $field_name, $request, $object_type ){
+					wp_set_object_terms( $post->ID, $value, 'topics' );
+				},
+ 				'schema'          => array(
+			    'description'   => 'Conversation tags',
+			    'type'          => 'array',
+					'context'       =>   array( 'view', 'edit' )
+				),
  			)
   	);
 		register_rest_field( 'conversation', 'author_data', array(
@@ -70,9 +77,7 @@
  	 );
 
 
-
 	} );
-
 
 	function get_yka_author_data( $object ){
 		return array(
