@@ -31,18 +31,29 @@ function authentication(){
     ) );
 
 
-    if(is_wp_error($user)){
+    if( is_wp_error( $user ) ){
       $data = $user;
     }
-    else if( class_exists('Application_Passwords') ){
-      $app = new Application_Passwords;
-      list( $new_password, $new_item ) = $app->create_new_application_password( $user->ID, 'yka_app' );
+
+    else if( class_exists('WP_Application_Passwords') ){
+      $app = new WP_Application_Passwords;
+
+      $local_time  = current_datetime();
+      $current_time = $local_time->getTimestamp() + $local_time->getOffset();
+
+      $unique_app_name = 'yka_app_'.$current_time;
+
+      list( $new_password, $new_item ) = $app->create_new_application_password( $user->ID, array( 'name'=> $unique_app_name ) );
+
+      // APPLICATION_PASSWORD
       $data['new_password'] = $new_password;
 
-      if(isset($user->data)){
+      if( isset( $user->data ) ){
         $data['user'] = $user->data;
       }
+
     }
+
   }
 
   print_r( wp_json_encode( $data ) );
@@ -50,3 +61,6 @@ function authentication(){
   wp_die();
 
 }
+
+// ENABLES APPLICATION_PASSWORD SECTION
+add_filter( 'wp_is_application_passwords_available', '__return_true' );
