@@ -4,7 +4,7 @@
 	$inc_files = array(
 		'class-yka-db-base.php',
 		'class-yka-bookmarks-db.php',
-		'class-yka-db-user-preference.php'
+		'class-yka-db-user-topics.php'
 	);
 
 	foreach( $inc_files as $inc_file ){

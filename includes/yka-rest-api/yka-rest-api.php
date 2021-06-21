@@ -77,17 +77,17 @@
    )	);
 
 	 // USER PREFERENCE FIELD
-	 register_rest_field( 'user', 'user_preference', array(
+	 register_rest_field( 'user', 'user_topics', array(
 		 'get_callback'    => function( $object, $field_name, $request ){
-				$user_preference_db = YKA_DB_USER_PREFERENCE::getInstance();
-				return $user_preference_db->getUserPreference( $object['id'] );
+				$user_topics_db = YKA_DB_USER_TOPICS::getInstance();
+				return $user_topics_db->getUserTopics( $object['id'] );
 		 },
 		 'update_callback' => function( $value, $post, $field_name, $request, $object_type ){
-				$user_preference_db = YKA_DB_USER_PREFERENCE::getInstance();
+				$user_topics_db = YKA_DB_USER_TOPICS::getInstance();
 				foreach( $value as $term ){
 					// INSERT IF THERE ARE NO PREVIOUS ENTRIES
-					if( ! in_array( $term, $user_preference_db->getUserPreference( $post->ID ) ) ){
-						$user_preference_db->insert(array(
+					if( ! in_array( $term, $user_topics_db->getUserTopics( $post->ID ) ) ){
+						$user_topics_db->insert(array(
 							'user_id' 		=> $post->ID,
 							'category_id' => $term
 						));
@@ -95,7 +95,7 @@
 				}
 		 },
 		 'schema'          => array(
-			 'description'   => 'User Preference',
+			 'description'   => 'User Topics',
 			 'type'          => 'array',
 			 'context'       =>  array( 'view', 'edit' )
 			)

@@ -1,11 +1,12 @@
+
 <?php
 
-class YKA_DB_USER_PREFERENCE extends YKA_DB_BASE{
+class YKA_DB_USER_TOPICS extends YKA_DB_BASE{
 
   function __construct(){
 
     // SET TABLE SLUG
-    $this->setTableSlug( 'user_preference' );
+    $this->setTableSlug( 'user_topics' );
     parent::__construct();
   }
 
@@ -30,7 +31,7 @@ class YKA_DB_USER_PREFERENCE extends YKA_DB_BASE{
 		return $this->query( $sql );
 	}
 
-  function getUserPreference( $user_id ){
+  function getUserTopics( $user_id ){
 		$table = $this->getTable();
 		global $wpdb;
     $result = array_map('intval', $wpdb->get_col( "SELECT category_id FROM $table WHERE user_id = $user_id;" ) );
@@ -39,4 +40,4 @@ class YKA_DB_USER_PREFERENCE extends YKA_DB_BASE{
 
 }
 
-YKA_DB_USER_PREFERENCE::getInstance();
+YKA_DB_USER_TOPICS::getInstance();
