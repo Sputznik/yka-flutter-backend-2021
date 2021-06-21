@@ -26,7 +26,15 @@ class YKA_DB_USER_PREFERENCE extends YKA_DB_BASE{
       FOREIGN KEY (category_id) REFERENCES $terms_table
 		) $charset_collate;";
 
+
 		return $this->query( $sql );
+	}
+
+  function getUserPreference( $user_id ){
+		$table = $this->getTable();
+		global $wpdb;
+    $result = array_map('intval', $wpdb->get_col( "SELECT category_id FROM $table WHERE user_id = $user_id;" ) );
+    return $result;
 	}
 
 }

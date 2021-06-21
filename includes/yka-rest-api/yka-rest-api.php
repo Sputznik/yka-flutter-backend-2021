@@ -70,11 +70,37 @@
 			)
  	 );
 
-	/* USER REGISTRATION ENDPOINT */
-  register_rest_route('yka/v1', 'register', array(
-    'methods' => 'POST',
-    'callback' => 'yka_user_registration',
-  )	);
+	 /* USER REGISTRATION ENDPOINT */
+   register_rest_route('yka/v1', 'register', array(
+     'methods' => 'POST',
+     'callback' => 'yka_user_registration',
+   )	);
+
+	 // USER PREFERENCE FIELD
+	 register_rest_field( 'user', 'user_preference', array(
+		 'get_callback'    => function( $object, $field_name, $request ){
+				$user_preference_db = YKA_DB_USER_PREFERENCE::getInstance();
+				return $user_preference_db->getUserPreference( $object['id'] );
+		 },
+		 'update_callback' => function( $value, $post, $field_name, $request, $object_type ){
+				$user_preference_db = YKA_DB_USER_PREFERENCE::getInstance();
+				foreach( $value as $term ){
+					// INSERT IF THERE ARE NO PREVIOUS ENTRIES
+					if( ! in_array( $term, $user_preference_db->getUserPreference( $post->ID ) ) ){
+						$user_preference_db->insert(array(
+							'user_id' 		=> $post->ID,
+							'category_id' => $term
+						));
+					}
+				}
+		 },
+		 'schema'          => array(
+			 'description'   => 'User Preference',
+			 'type'          => 'array',
+			 'context'       =>  array( 'view', 'edit' )
+			)
+		)
+	 );
 
 
 	} );
