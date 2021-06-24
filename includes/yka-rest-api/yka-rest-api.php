@@ -74,7 +74,17 @@
 	 register_rest_field( 'user', 'user_topics', array(
 		 'get_callback'    => function( $object, $field_name, $request ){
 				$user_topics_db = YKA_DB_USER_TOPICS::getInstance();
-				return $user_topics_db->getUserTopics( $object['id'] );
+				$user_topic_ids = $user_topics_db->getUserTopics( $object['id'] );
+				$user_topics_arr = array();
+				foreach ( $user_topic_ids as $topic_id) {
+					$topic_obj = array(
+						'id' 		=> $topic_id,
+						'slug'	=> get_term( $topic_id, 'topics' )->slug,
+						'name'	=> get_term( $topic_id, 'topics' )->name
+					);
+					array_push( $user_topics_arr, $topic_obj );
+				}
+				return $user_topics_arr;
 		 },
 		 'update_callback' => function( $value, $post, $field_name, $request, $object_type ){
 				$user_topics_db = YKA_DB_USER_TOPICS::getInstance();
