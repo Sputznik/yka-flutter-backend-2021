@@ -77,19 +77,16 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
 
   function user_registration_callback( $request = null ) {
 
-  	$response 	= array();
-  	$parameters = $request->get_params();
-  	$email 			= sanitize_text_field( $parameters['email'] );
-  	$username 	= sanitize_text_field( $parameters['username'] );
-  	$password 	= sanitize_text_field( $parameters['password'] );
+    $response 	  = array();
+    $parameters   = $request->get_params();
+  	$username 	  = sanitize_text_field( $parameters['username'] );
+    $password 	  = sanitize_text_field( $parameters['password'] );
+    $display_name = sanitize_text_field( $parameters['display_name'] );
+    $user_topics  = explode(', ', $parameters['user_topics'] );
 
   	$error = new WP_Error();
   	if ( empty( $username ) ) {
   		$error->add( 400, __("Username is required.", 'wp-rest-user'), array( 'status' => 400 ) );
-  		return $error;
-  	}
-  	if ( empty( $email ) ) {
-  		$error->add( 401, __("Email is required.", 'wp-rest-user'), array( 'status' => 400 ) );
   		return $error;
   	}
   	if ( empty( $password ) ) {
@@ -97,19 +94,59 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
   		return $error;
   	}
 
+    if ( empty( $display_name ) ) {
+  		$error->add( 404, __("Display Name is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+    if ( empty( $user_topics ) ) {
+  		$error->add( 404, __("User topics cannot be empty.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+    // THROW ERROR IF USER HAS SELECTED LESS THAN 3 TOPICS
+    if ( !empty( $user_topics ) ) {
+  		if( count( $user_topics ) < 3 ){
+        $error->add( 404, __("You must choose at least 3 topics.", 'wp-rest-user'), array( 'status' => 400 ) );
+    		return $error;
+      }
+  	}
+
   	$user_id = username_exists( $username );
 
-  	// SHOWS ERROR IF USER ALREADY EXISTS
-  	if ( !$user_id && email_exists( $email ) == false ) {
-  		$user_id = wp_create_user( $username, $password, $email );
+  	// THROW ERROR IF USER ALREADY EXISTS ELSE ADD NEW USER
+    if ( !$user_id ) {
+
+      $user_id = wp_create_user( $username, $password );
   		if ( !is_wp_error( $user_id ) ) {
   			$user = get_user_by('id', $user_id);
 
-         // SET DEFAULT DISPLAY PICTURE
-         update_user_meta( $user_id, 'user_display_picture', YKA_URI.'includes/assets/images/default-profile.png' );
-         
   			// SET USER ROLE
   			$user->set_role('administrator');
+
+        // SET DISPLAY NAME AS FIRST NAME
+        $user_fields = array(
+         'ID'           => $user_id,
+         'first_name'   => esc_attr( $display_name ),
+         'display_name' => esc_attr( $display_name )
+        );
+
+        wp_update_user( $user_fields );
+
+        // SET DEFAULT DISPLAY PICTURE
+        update_user_meta( $user_id, 'user_display_picture', YKA_URI.'includes/assets/images/default-profile.png' );
+
+        // ADD USER TOPICS
+        $user_topics_db = YKA_DB_USER_TOPICS::getInstance();
+
+        foreach( $user_topics as $term ){
+					if( ! in_array( $term, $user_topics_db->getUserTopics( $user_id ) ) ){
+						$user_topics_db->insert(array(
+							'user_id' 		=> $user_id,
+							'category_id' => $term
+						));
+					}
+				}
 
   			$response['code'] = 200;
   			$response['message'] = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
@@ -118,7 +155,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
   			return $user_id;
   		}
   	} else {
-  		$error->add( 406, __("Email/Username already exists", 'wp-rest-user'), array( 'status' => 400 ) );
+  		$error->add( 406, __("Username already exists", 'wp-rest-user'), array( 'status' => 400 ) );
   		return $error;
   	}
 
