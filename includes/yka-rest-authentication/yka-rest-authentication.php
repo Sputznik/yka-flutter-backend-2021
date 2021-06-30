@@ -105,6 +105,9 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
   		if ( !is_wp_error( $user_id ) ) {
   			$user = get_user_by('id', $user_id);
 
+         // SET DEFAULT DISPLAY PICTURE
+         update_user_meta( $user_id, 'user_display_picture', YKA_URI.'includes/assets/images/default-profile.png' );
+         
   			// SET USER ROLE
   			$user->set_role('administrator');
 
