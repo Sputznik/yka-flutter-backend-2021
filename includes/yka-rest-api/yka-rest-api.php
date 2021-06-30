@@ -111,7 +111,7 @@
 	 register_rest_field( 'user', 'user_display_picture', array(
 		 'get_callback'    => function( $object, $field_name, $request ){
 			 	$user_profile = get_user_meta( $object['id'], $field_name )[0];
-				return !empty( $user_profile ) ? $user_profile : get_avatar_url( $object['id'] );
+				return !empty( $user_profile ) ? $user_profile : YKA_URI.'includes/assets/images/default-profile.png';
 		 },
 		 'update_callback' => function( $value, $post, $field_name, $request, $object_type ){
 			 	update_user_meta( $post->ID, $field_name, $value );
@@ -132,10 +132,13 @@
 		return $quoted_comment;
 	}
 
-	function get_yka_author_data( $object ){
+	function get_yka_author_data( $object, $field_name, $request ){
+
+		$user_avatar = get_user_meta( $object['author'], 'user_display_picture' )[0];
+
 		return array(
 			'name'    => get_the_author_meta( 'display_name', $object['author'] ),
-			'avatar'  => ''
+			'avatar'  => !empty( $user_avatar ) ? $user_avatar : YKA_URI.'includes/assets/images/default-profile.png'
 		);
 	}
 
