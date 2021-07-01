@@ -39,18 +39,9 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
         $data = $user;
       }
 
-      else if( class_exists('WP_Application_Passwords') ){
-        $app = new WP_Application_Passwords;
-
-        $local_time  = current_datetime();
-        $current_time = $local_time->getTimestamp() + $local_time->getOffset();
-
-        $unique_app_name = 'yka_app_'.$current_time;
-
-        list( $new_password, $new_item ) = $app->create_new_application_password( $user->ID, array( 'name'=> $unique_app_name ) );
-
-        // APPLICATION_PASSWORD
-        $data['new_password'] = $new_password;
+      else{
+        // SET APPLICATION_PASSWORD
+        $data['new_password'] = $this->generateAppPassword( $user->ID );
 
         if( isset( $user->data ) ){
           $data['user'] = $user->data;
@@ -82,7 +73,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
   	$username 	  = sanitize_text_field( $parameters['username'] );
     $password 	  = sanitize_text_field( $parameters['password'] );
     $display_name = sanitize_text_field( $parameters['display_name'] );
-    $user_topics  = explode(', ', $parameters['user_topics'] );
+    $user_topics  = explode(',', $parameters['user_topics'] );
 
   	$error = new WP_Error();
   	if ( empty( $username ) ) {
@@ -107,7 +98,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
     // THROW ERROR IF USER HAS SELECTED LESS THAN 3 TOPICS
     if ( !empty( $user_topics ) ) {
   		if( count( $user_topics ) < 3 ){
-        $error->add( 404, __("You must choose at least 3 topics.", 'wp-rest-user'), array( 'status' => 400 ) );
+        $error->add( 404, __( "You must choose at least 3 topics.", 'wp-rest-user'), array( 'status' => 400 ) );
     		return $error;
       }
   	}
@@ -148,8 +139,9 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
 					}
 				}
 
-  			$response['code'] = 200;
-  			$response['message'] = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
+  			$response['code']         = 200;
+  			$response['message']      = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
+        $response['new_password'] = $this->generateAppPassword( $user_id ); // SET APPLICATION_PASSWORD
 
   		} else {
   			return $user_id;
@@ -161,6 +153,22 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
 
   	return new WP_REST_Response( $response, 123 );
 
+  }
+
+  // GENERATES NEW APPLICATION PASSWORD
+  function generateAppPassword( $user_id ){
+    if( class_exists('WP_Application_Passwords') ){
+      $app = new WP_Application_Passwords;
+
+      $local_time  = current_datetime();
+      $current_time = $local_time->getTimestamp() + $local_time->getOffset();
+
+      $unique_app_name = 'yka_app_'.$current_time;
+
+      list( $new_password, $new_item ) = $app->create_new_application_password( $user_id, array( 'name'=> $unique_app_name ) );
+
+      return $new_password;
+    }
   }
 
 }
