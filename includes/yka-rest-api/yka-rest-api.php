@@ -123,6 +123,24 @@
 			)
 		)
 	 );
+
+	 // USER CITY
+ 	register_rest_field( 'user', 'user_city', array(
+ 		'get_callback'    => function( $object, $field_name, $request ){
+ 			 $user_profile = get_user_meta( $object['id'], $field_name )[0];
+ 			 return !empty( $user_profile ) ? $user_profile : false;
+ 		},
+ 		'update_callback' => function( $value, $post, $field_name, $request, $object_type ){
+ 			 update_user_meta( $post->ID, $field_name, $value );
+ 		},
+ 		'schema'          => array(
+ 			'description'   => 'User City',
+ 			'type'          => 'String',
+ 			'context'       =>  array( 'view', 'edit' )
+ 		 )
+ 	 )
+ 	);
+
 	} );
 
 
