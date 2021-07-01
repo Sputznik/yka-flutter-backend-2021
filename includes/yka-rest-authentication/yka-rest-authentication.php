@@ -73,6 +73,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
   	$username 	  = sanitize_text_field( $parameters['username'] );
     $password 	  = sanitize_text_field( $parameters['password'] );
     $display_name = sanitize_text_field( $parameters['display_name'] );
+    $user_phone   = sanitize_text_field( $parameters['user_phone'] );
     $user_topics  = explode(',', $parameters['user_topics'] );
 
   	$error = new WP_Error();
@@ -103,6 +104,20 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
       }
   	}
 
+
+    if ( empty( $user_phone ) ) {
+  		$error->add( 404, __("Phone number is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+    // THROW ERROR IF PHONE NUMBER IS NOT OF TYPE INTEGER
+    if ( !empty( $user_phone ) ) {
+  		if( filter_var( $user_phone, FILTER_VALIDATE_INT ) === false ){
+        $error->add( 404, __( "Invalid phone number.", 'wp-rest-user'), array( 'status' => 400 ) );
+    		return $error;
+      }
+  	}
+
   	$user_id = username_exists( $username );
 
   	// THROW ERROR IF USER ALREADY EXISTS ELSE ADD NEW USER
@@ -124,8 +139,15 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
 
         wp_update_user( $user_fields );
 
-        // SET DEFAULT DISPLAY PICTURE
-        update_user_meta( $user_id, 'user_display_picture', YKA_URI.'includes/assets/images/default-profile.png' );
+        // SET USER META
+        $new_user_meta = array(
+          'user_phone'  => $user_phone,
+          'user_display_picture'  => YKA_URI.'includes/assets/images/default-profile.png'
+        );
+
+        foreach( $new_user_meta as $slug => $value ){
+          update_user_meta( $user_id, $slug, $value );
+        }
 
         // ADD USER TOPICS
         $user_topics_db = YKA_DB_USER_TOPICS::getInstance();
