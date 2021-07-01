@@ -73,7 +73,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
   	$username 	  = sanitize_text_field( $parameters['username'] );
     $password 	  = sanitize_text_field( $parameters['password'] );
     $display_name = sanitize_text_field( $parameters['display_name'] );
-    $user_phone   = sanitize_text_field( $parameters['user_phone'] );
+    $user_phone   = $parameters['user_phone'];
     $user_topics  = explode(',', $parameters['user_topics'] );
 
   	$error = new WP_Error();
