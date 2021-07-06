@@ -124,6 +124,14 @@
 		)
 	 );
 
+	 // USER COUNTRY
+	 register_rest_field( 'user', 'user_country', array(
+		 'get_callback'    => function( $object, $field_name, $request ){
+				return "India";
+		 }
+		)
+	 );
+
 	 // USER CITY
  	register_rest_field( 'user', 'user_city', array(
  		'get_callback'    => function( $object, $field_name, $request ){
