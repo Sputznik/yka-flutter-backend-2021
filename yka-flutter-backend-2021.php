@@ -14,7 +14,7 @@ if( ! defined( 'ABSPATH' ) ){ exit; }
 define( 'YKA_VERSION', time() );
 define( 'YKA_PATH', plugin_dir_path( __FILE__ ) );
 define( 'YKA_URI', plugin_dir_url( __DIR__ ).'yka-flutter-backend-2021/' ); // GIVES THE ROOT URL OF THE PLUGIN
-
+define( 'YKA_DEFAULT_USER_AVATAR', YKA_URI.'includes/assets/images/default-profile.png' );
 
 $inc_files = array(
   'includes/class-yka-base.php',																	   // BASE CLASS THAT PROVIDES SINGLETON DESIN PATTERN

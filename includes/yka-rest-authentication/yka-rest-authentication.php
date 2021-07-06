@@ -142,7 +142,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
         // SET USER META
         $new_user_meta = array(
           'user_phone'  => $user_phone,
-          'user_display_picture'  => YKA_URI.'includes/assets/images/default-profile.png'
+          'user_display_picture'  => YKA_DEFAULT_USER_AVATAR
         );
 
         foreach( $new_user_meta as $slug => $value ){
