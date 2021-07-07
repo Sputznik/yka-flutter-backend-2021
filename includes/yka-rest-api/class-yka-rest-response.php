@@ -8,6 +8,7 @@ class YKA_REST_RESPONSE extends YKA_BASE{
     add_filter('rest_prepare_yka-comment', array( $this, 'yka_remove_extra_data' ), 12, 3);
     add_filter( "rest_prepare_conversation", array( $this, 'yka_entity_decode' ), 10, 1 );
     add_filter( "rest_prepare_yka-comment", array( $this, 'yka_entity_decode' ), 10, 1 );
+    add_filter( 'rest_user_query', array( $this, 'yka_show_all_users' ), 10, 2 );
   }
 
   // REMOVES EXTRA DATA FROM THE REST RESPONSE
@@ -65,6 +66,16 @@ class YKA_REST_RESPONSE extends YKA_BASE{
   	$cpts = ['conversation', 'yka-comment'];
   	if( in_array( get_post_type(), $cpts ) ) { remove_filter( 'the_content', 'wpautop' ); }
     return $content;
+  }
+
+  /**
+   * Removes `has_published_posts` from the query args so even users who have not
+   * published content are returned by the request.
+   * @see https://developer.wordpress.org/reference/classes/wp_user_query/
+   */
+  function yka_show_all_users( $prepared_args, $request ){
+    unset( $prepared_args['has_published_posts'] );
+    return $prepared_args;
   }
 
 }
