@@ -163,7 +163,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
 
   			$response['code']         = 200;
   			$response['message']      = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
-        $response['new_password'] = $this->generateAppPassword( $user_id ); // SET APPLICATION_PASSWORD
+        // $response['new_password'] = $this->generateAppPassword( $user_id ); // SET APPLICATION_PASSWORD
 
   		} else {
   			return $user_id;
@@ -182,10 +182,11 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
     if( class_exists('WP_Application_Passwords') ){
       $app = new WP_Application_Passwords;
 
-      $local_time  = current_datetime();
-      $current_time = $local_time->getTimestamp() + $local_time->getOffset();
+      // $local_time  = current_datetime();
+      // $current_time = $local_time->getTimestamp() + $local_time->getOffset();
 
-      $unique_app_name = 'yka_app_'.$current_time;
+      $unique_id = md5( uniqid() );
+      $unique_app_name = 'yka_app_'.$unique_id;
 
       list( $new_password, $new_item ) = $app->create_new_application_password( $user_id, array( 'name'=> $unique_app_name ) );
 
