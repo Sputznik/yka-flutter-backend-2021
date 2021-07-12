@@ -128,7 +128,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
   			$user = get_user_by('id', $user_id);
 
   			// SET USER ROLE
-  			$user->set_role('administrator');
+  			$user->set_role('author');
 
         // SET DISPLAY NAME AS FIRST NAME
         $user_fields = array(
