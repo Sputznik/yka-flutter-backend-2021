@@ -15,9 +15,11 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
     $this->registerRestField(
       'author_data',
       function( $post, $field_name, $request ){
-        $user_avatar = get_user_meta( $post['author'], 'user_display_picture', true );
+        $author_id   = get_post_field( 'post_author', $post['id'] );
+        $user_avatar = get_the_author_meta( 'user_display_picture', $author_id );
+
         return array(
-    			'name'    => get_the_author_meta( 'display_name', $post['author'] ),
+    			'name'    => get_the_author_meta( 'display_name', $author_id ),
     			'avatar'  => !empty( $user_avatar ) ? $user_avatar : YKA_DEFAULT_USER_AVATAR
     		);
       }
