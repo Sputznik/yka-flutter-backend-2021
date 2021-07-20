@@ -4,6 +4,7 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
 
   function __construct(){
     $this->setPostType( 'user' );
+    add_filter( 'rest_user_query', array( $this, 'filterRestData' ), 10, 2 );
     parent::__construct();
   }
 
@@ -104,6 +105,24 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
       )
     );
 
+  }
+
+  // OPTION TO SHOW USERS BASED on following or followers parameter
+  function filterRestData( $args, $request ){
+    $user_followers = $request->get_param( 'followers' );
+		$user_following = $request->get_param( 'following' );
+    $follow_users = array(
+      'type'    => $user_followers ? "followers" : "following",
+      'user_id' => (int) ( $user_followers ? $user_followers : $user_following ) // VALUE MUST BE ALWAYS >= 1
+    );
+
+    if( $follow_users['user_id'] ){
+      $follow_users_db = YKA_DB_FOLLOW_USERS::getInstance();
+      $user_ids = $follow_users_db->getUserIDs( $follow_users['user_id'], $follow_users['type']  );
+      $args['include'] = $user_ids ? $user_ids : array(0); // SHOW EMPTY LIST IF FOLLOWING OR FOLLOWER ID'S DOES NOT EXIST
+    }
+
+    return $args;
   }
 
 }

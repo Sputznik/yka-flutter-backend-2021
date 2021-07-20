@@ -25,9 +25,18 @@ class YKA_DB_FOLLOW_USERS extends YKA_DB_BASE{
       FOREIGN KEY (following_id) REFERENCES $users_table
 		) $charset_collate;";
 
+    $this->query( $sql );
 
-		return $this->query( $sql );
-	}
+  }
+  
+  function getUserIDs( $user_id, $type = "followers"){
+    global $wpdb;
+    $table = $this->getTable();
+    $users_query = "SELECT user_id FROM $table WHERE following_id = $user_id;";
+    if( $type == "following" ){ $users_query = "SELECT following_id FROM $table WHERE user_id = $user_id;"; }
+    $result = array_map('intval', $wpdb->get_col( $users_query ) );
+    return $result;
+  }
 
 }
 
