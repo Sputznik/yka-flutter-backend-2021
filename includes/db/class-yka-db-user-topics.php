@@ -1,4 +1,3 @@
-
 <?php
 
 class YKA_DB_USER_TOPICS extends YKA_DB_BASE{
@@ -27,8 +26,8 @@ class YKA_DB_USER_TOPICS extends YKA_DB_BASE{
       FOREIGN KEY (category_id) REFERENCES $terms_table
 		) $charset_collate;";
 
+		$this->query( $sql );
 
-		return $this->query( $sql );
 	}
 
   function getUserTopics( $user_id ){
