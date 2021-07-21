@@ -75,6 +75,15 @@ class YKA_DB_BASE extends YKA_BASE{
 		return $wpdb->get_charset_collate();
 	}
 
+  function delete( $where, $where_format = null ){
+		global $wpdb;
+		return $wpdb->delete(
+			$this->getTable(),
+			$where,
+			$where_format
+		);
+	}
+
   // TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION
   function create(){}
 

@@ -28,7 +28,7 @@ class YKA_DB_FOLLOW_USERS extends YKA_DB_BASE{
     $this->query( $sql );
 
   }
-  
+
   function getUserIDs( $user_id, $type = "followers"){
     global $wpdb;
     $table = $this->getTable();
@@ -37,6 +37,16 @@ class YKA_DB_FOLLOW_USERS extends YKA_DB_BASE{
     $result = array_map('intval', $wpdb->get_col( $users_query ) );
     return $result;
   }
+
+  //CHECK IF CURRENT USER ALREADY FOLLOWED
+	function is_following( $following_id ){
+		global $wpdb;
+		$user_id = get_current_user_id();
+		$table_name = $this->getTable();
+		$rs = $wpdb->get_row( "SELECT * FROM $table_name WHERE user_id = $user_id AND following_id = $following_id" );
+		if( null != $rs ) return true;
+		return false;
+	}
 
 }
 
