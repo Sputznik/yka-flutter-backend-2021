@@ -105,6 +105,50 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
       )
     );
 
+    // USER FOLLOW
+    $this->registerRestField(
+      'follow',
+      function( $post, $field_name, $request ){
+        $follow_users_db = YKA_DB_FOLLOW_USERS::getInstance();
+        $follow_flag = $follow_users_db->is_following( $post['id'] );
+        if( $follow_flag ) return true;
+        return false;
+      },
+      function( $value, $post, $field_name, $request, $object_type ){
+        $follow_users_db = YKA_DB_FOLLOW_USERS::getInstance();
+        $follow_id = $post->ID;
+        /**
+         * BODY PARAMS
+         * follow = true / false
+         * METHOD : PUT
+         */
+        if( $follow_id){
+          $current_user_id = get_current_user_id();
+          $item = array(
+            'user_id'       => $current_user_id,
+            'following_id'  =>  $follow_id
+          );
+
+          // ADD AN ENTRY IF follow = true
+          if( $value ){
+            $follow_users_db->insert( $item );
+          }
+          else{
+            // DELETE ENTRIES IF follow = false
+            if( $follow_users_db->is_following( $follow_id ) ){
+              $follow_users_db->delete( $item );
+            }
+          }
+
+        }
+      },
+      array(
+       'description'   => 'Follow or Unfollow User',
+       'type'          => 'boolean',
+       'context'       =>  array( 'view', 'edit' )
+      )
+    );
+
   }
 
   // OPTION TO SHOW USERS BASED on following or followers parameter
