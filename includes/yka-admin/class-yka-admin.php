@@ -11,6 +11,8 @@ class YKA_ADMIN extends YKA_BASE{
     // LOAD ASSETS FOR WP ADMIN BACKEND
     add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ) );
 
+    // MIME TYPE SUPPORT
+    add_filter( 'wp_check_filetype_and_ext', array( $this, 'yka_allow_upload_extension' ), 10, 4 );
 
   } // CONSTRUCT ENDS
 
@@ -72,7 +74,14 @@ class YKA_ADMIN extends YKA_BASE{
     );
   }
 
+  function yka_allow_upload_extension( $data, $file, $filename, $mimes ) {
+    if( false !== strpos( $filename, '.aac' ) ){
+     $data['ext'] = 'aac';
+     $data['type'] = 'application/octet-stream';
+    }
 
+    return $data;
+  }
 
 }
 
