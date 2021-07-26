@@ -129,15 +129,14 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
             'following_id'  =>  $follow_id
           );
 
+          // DELETE ENTRIES IF ALREADY FOLLOWED
+          if( $follow_users_db->is_following( $follow_id ) ){
+            $follow_users_db->delete( $item );
+          }
+
           // ADD AN ENTRY IF follow = true
           if( $value ){
             $follow_users_db->insert( $item );
-          }
-          else{
-            // DELETE ENTRIES IF follow = false
-            if( $follow_users_db->is_following( $follow_id ) ){
-              $follow_users_db->delete( $item );
-            }
           }
 
         }
