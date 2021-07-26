@@ -29,15 +29,25 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
 			},
 			function( $value, $post, $field_name, $request, $object_type ){
         $user_topics_db = YKA_DB_USER_TOPICS::getInstance();
-				foreach( $value as $term ){
-					// INSERT IF THERE ARE NO PREVIOUS ENTRIES
-					if( ! in_array( $term, $user_topics_db->getUserTopics( $post->ID ) ) ){
-						$user_topics_db->insert(array(
-							'user_id' 		=> $post->ID,
-							'category_id' => $term
-						));
-					}
-				}
+
+        if( count( $value ) > 0 ){
+
+          foreach( $value as $term ){
+            $item = array(
+              'user_id' 		=> $post->ID,
+              'category_id' => $term
+            );
+            // INSERT IF THERE ARE NO PREVIOUS ENTRIES
+  					if( ! in_array( $term, $user_topics_db->getUserTopics( $post->ID ) ) ){
+  						$user_topics_db->insert( $item );
+  					}
+            else{
+              // DELETE IF THERE ARE ANY PREVIOUS ENTRIES
+              $user_topics_db->delete( $item );
+            }
+  				}
+
+        }
 			},
 			array(
        'description'   => 'User Topics',
