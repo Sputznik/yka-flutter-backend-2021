@@ -19,6 +19,7 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
         $user_avatar = get_the_author_meta( 'user_display_picture', $author_id );
 
         return array(
+          'id'      => $author_id,
     			'name'    => get_the_author_meta( 'display_name', $author_id ),
     			'avatar'  => !empty( $user_avatar ) ? $user_avatar : YKA_DEFAULT_USER_AVATAR
     		);
