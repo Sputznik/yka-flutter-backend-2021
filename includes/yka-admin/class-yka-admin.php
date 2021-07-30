@@ -75,10 +75,11 @@ class YKA_ADMIN extends YKA_BASE{
   }
 
   function yka_allow_upload_extension( $data, $file, $filename, $mimes ) {
-    if( false !== strpos( $filename, '.aac' ) ){
-     $data['ext'] = 'aac';
-     $data['type'] = 'application/octet-stream';
-    }
+    if ( ! empty( $data ) ) {
+			$filetype = wp_check_filetype( $filename );
+			$data['ext'] = $filetype['ext'];
+			$data['type'] = $filetype['type'];
+		}
 
     return $data;
   }
