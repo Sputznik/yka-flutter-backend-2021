@@ -7,7 +7,8 @@ $inc_files = array(
 	'class-yka-rest-yka-comment.php',
 	'class-yka-rest-user.php',
 	'class-yka-rest-custom.php',
-	'class-yka-rest-response.php'
+	'class-yka-rest-response.php',
+	'class-yka-rest-signup-validation.php'
 );
 
 foreach( $inc_files as $inc_file ){
