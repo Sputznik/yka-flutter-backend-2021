@@ -14,6 +14,12 @@ class YKA_ADMIN extends YKA_BASE{
     // MIME TYPE SUPPORT
     add_filter( 'wp_check_filetype_and_ext', array( $this, 'yka_allow_upload_extension' ), 10, 4 );
 
+    // DELETE USER DATA FROM CUSTOM TABLES
+    add_action( 'delete_user', array( $this, 'yka_delete_user_data' ) );
+
+    // DELETE POSTS WITH USER FROM CPT THAT DO NOT HAVE AN AUTHOR FIELD
+    add_filter("post_types_to_delete_with_user", array( $this, "yka_post_types_to_delete_with_user" ), 10, 2);
+
   } // CONSTRUCT ENDS
 
 
@@ -82,6 +88,31 @@ class YKA_ADMIN extends YKA_BASE{
 		}
 
     return $data;
+  }
+
+  function yka_delete_user_data( $user_id ) {
+    global $wpdb;
+    $prefix = $wpdb->prefix;
+    $user_obj = get_userdata( $user_id );
+
+    $custom_user_tables = array(
+      $prefix.'yka_follow_users' => array(
+        'where' => "user_id = $user_obj->ID OR following_id = $user_obj->ID"
+      ),
+      $prefix.'yka_user_topics' => array(
+        'where' => "user_id = $user_obj->ID"
+      )
+    );
+
+    foreach( $custom_user_tables as $table => $value ){
+      $wpdb->query( "DELETE FROM $table WHERE ".$value['where'] );
+    }
+
+  }
+
+  function yka_post_types_to_delete_with_user( array $post_types_to_delete, $user_id ){
+    $post_types_to_delete[] = "yka-comment";
+    return $post_types_to_delete;
   }
 
 }
