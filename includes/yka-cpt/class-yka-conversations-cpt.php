@@ -40,7 +40,7 @@ class YKA_CONVERSATIONS extends YKA_BASE{
 			$yka_tax['topics']	= array(
 		    'label'			  => 'Topics',
 		    'slug' 			  => 'topics',
-		    'post_types'	=> array( 'conversation' ),
+		    'post_types'	=> array( 'conversation','learning-capsules' ),
 				'show_in_rest'	=> true
 			);
 
