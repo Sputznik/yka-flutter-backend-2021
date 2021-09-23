@@ -26,17 +26,20 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
       }
     );
 
-    // ATTACHMENTS
-    $this->registerRestField(
-      'attachments',
-      function( $post, $field_name, $request ){
-        $post_id = $post['id'];
-    		return $post_attachments = array(
-    			'images'   => $this->get_yka_attachment( $post_id, 'image' ),
-    			'audio'    => $this->get_yka_attachment( $post_id, 'audio' )
-        );
-      }
-    );
+    // SHOW ATTACHMENTS FIELD IF CPT IS NOT Learning-Capsules
+    if( $this->getPostType() != 'learning-capsules' ){
+      // ATTACHMENTS
+      $this->registerRestField(
+        'attachments',
+        function( $post, $field_name, $request ){
+          $post_id = $post['id'];
+      		return $post_attachments = array(
+      			'images'   => $this->get_yka_attachment( $post_id, 'image' ),
+      			'audio'    => $this->get_yka_attachment( $post_id, 'audio' )
+          );
+        }
+      );
+    }
 
     // SHOW TAG FIELD IF CPT IS NOT YKA-COMMENT
     if( $this->getPostType() != 'yka-comment' ){
@@ -68,8 +71,13 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
       $yka_post_attachment = array(
         'id' => $attachment->ID,
         'url' => wp_get_attachment_url( $attachment->ID ),
-        'mime_type' => $attachment->post_mime_type
+        'mime_type' => $attachment->post_mime_type,
       );
+
+      if( $this->getPostType() == 'learning-capsules' ){
+        $yka_post_attachment['description'] = $attachment->post_content;
+      }
+
       array_push( $attachments_arr, $yka_post_attachment );
     }
 

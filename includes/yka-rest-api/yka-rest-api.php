@@ -5,6 +5,7 @@ $inc_files = array(
 	'class-yka-rest-post-base.php',
 	'class-yka-rest-conversation.php',
 	'class-yka-rest-yka-comment.php',
+	'class-yka-rest-learning-capsule.php',
 	'class-yka-rest-user.php',
 	'class-yka-rest-custom.php',
 	'class-yka-rest-response.php',
