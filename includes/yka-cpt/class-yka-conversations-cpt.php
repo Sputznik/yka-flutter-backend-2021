@@ -28,7 +28,7 @@ class YKA_CONVERSATIONS extends YKA_BASE{
     		),
 				'menu_icon'	=>	'dashicons-groups',
     		'public'		=> true,
-    		'supports'	=> array( 'title', 'editor', 'thumbnail', 'author' ),
+    		'supports'	=> array( 'title', 'editor', 'author' ),
 				'show_in_rest' => true
 			);
       return $post_types;

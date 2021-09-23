@@ -2,13 +2,23 @@
 
 class YKA_REST_RESPONSE extends YKA_BASE{
 
+  var $cpts;
+
   function __construct(){
+
+    $this->cpts = ['conversation', 'yka-comment','learning-capsules'];
+
+    $this->init();
+
     add_filter( 'the_content', array( $this, 'yka_remove_autop' ), 1 );
-    add_filter("rest_prepare_conversation", array( $this, 'yka_remove_extra_data' ), 12, 3);
-    add_filter('rest_prepare_yka-comment', array( $this, 'yka_remove_extra_data' ), 12, 3);
-    add_filter( "rest_prepare_conversation", array( $this, 'yka_entity_decode' ), 10, 1 );
-    add_filter( "rest_prepare_yka-comment", array( $this, 'yka_entity_decode' ), 10, 1 );
     add_filter( 'rest_user_query', array( $this, 'yka_show_all_users' ), 10, 2 );
+  }
+
+  function init(){
+    foreach( $this->cpts as $cpt ){
+      add_filter( 'rest_prepare_'.$cpt, array( $this, 'yka_remove_extra_data' ), 12, 3 );
+      add_filter( 'rest_prepare_'.$cpt, array( $this, 'yka_entity_decode' ), 10, 1 );
+    }
   }
 
   // REMOVES EXTRA DATA FROM THE REST RESPONSE
@@ -19,7 +29,7 @@ class YKA_REST_RESPONSE extends YKA_BASE{
       $fields_arr = array(
         'modified',
         'modified_gmt',
-        'featured_media',
+        // 'featured_media',
         'template',
         'author',
         'slug',
@@ -63,8 +73,7 @@ class YKA_REST_RESPONSE extends YKA_BASE{
 
   // REMOVES AUTO GENERATED P TAGS
   function yka_remove_autop( $content ){
-  	$cpts = ['conversation', 'yka-comment'];
-  	if( in_array( get_post_type(), $cpts ) ) { remove_filter( 'the_content', 'wpautop' ); }
+  	if( in_array( get_post_type(), $this->cpts ) ) { remove_filter( 'the_content', 'wpautop' ); }
     return $content;
   }
 

@@ -38,6 +38,27 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
       }
     );
 
+    // SHOW TAG FIELD IF CPT IS NOT YKA-COMMENT
+    if( $this->getPostType() != 'yka-comment' ){
+
+      // TAGS
+      $this->registerRestField(
+        'tags',
+        function( $post, $field_name, $request ){
+  				return wp_get_object_terms( $post['id'], 'topics', array( 'fields' => 'names' ) );
+        },
+  			function( $value, $post, $field_name, $request, $object_type ){
+  				wp_set_object_terms( $post->ID, $value, 'topics' );
+  			},
+  				array(
+  		    'description'   => 'Tag Names',
+  		    'type'          => 'array',
+  				'context'       =>   array( 'view', 'edit' )
+  			)
+    	);
+
+    }
+
   }
 
   function get_yka_attachment( $postId, $attachment_type ){

@@ -19,7 +19,7 @@ class YKA_COMMENTS extends YKA_BASE{
 				'menu_icon'	=>	'dashicons-format-chat',
     		'public'		=> true,
 				'hierarchical' => true,
-    		'supports'	=> array( 'title', 'editor', 'thumbnail' ),
+    		'supports'	=> array( 'title', 'editor' ),
 				'show_in_rest' => true
 			);
       return $post_types;

@@ -19,22 +19,6 @@ class YKA_REST_CONVERSATION extends YKA_REST_POST_BASE{
 			}
   	);
 
-    // TAGS
-    $this->registerRestField(
-      'tags',
-      function( $post, $field_name, $request ){
-				return wp_get_object_terms( $post['id'], 'topics', array( 'fields' => 'names' ) );
-			},
-			function( $value, $post, $field_name, $request, $object_type ){
-				wp_set_object_terms( $post->ID, $value, 'topics' );
-			},
-				array(
-		    'description'   => 'Conversation tags',
-		    'type'          => 'array',
-				'context'       =>   array( 'view', 'edit' )
-			)
-  	);
-
     // COMMENTS-DATA
 		$this->registerRestField(
       'comments_data',
