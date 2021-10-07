@@ -18,7 +18,7 @@ class YKA_LEARNING_CAPSULES extends YKA_BASE{
     		),
 				'menu_icon'	=>	'dashicons-welcome-learn-more',
     		'public'		=> true,
-    		'supports'	=> array( 'title', 'editor', 'thumbnail' ),
+    		'supports'	=> array( 'title', 'editor', 'thumbnail', 'author' ),
         'show_in_rest' => true
     	);
       return $post_types;
