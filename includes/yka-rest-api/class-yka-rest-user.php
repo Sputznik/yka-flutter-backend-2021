@@ -18,12 +18,14 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
 				$user_topic_ids = $user_topics_db->getUserTopics( $post['id'] );
 				$user_topics_arr = array();
 				foreach ( $user_topic_ids as $topic_id) {
-					$topic_obj = array(
-						'id' 		=> $topic_id,
-						'slug'	=> get_term( $topic_id, 'topics' )->slug,
-						'name'	=> get_term( $topic_id, 'topics' )->name
-					);
-					array_push( $user_topics_arr, $topic_obj );
+          if( term_exists( $topic_id, 'topics' ) ){
+            $topic_obj = array(
+              'id' 		=> $topic_id,
+              'slug'	=> get_term( $topic_id, 'topics' )->slug,
+              'name'	=> get_term( $topic_id, 'topics' )->name
+            );
+            array_push( $user_topics_arr, $topic_obj );
+          }
 				}
 				return $user_topics_arr;
 			},

@@ -17,6 +17,9 @@ class YKA_ADMIN extends YKA_BASE{
     // DELETE USER DATA FROM CUSTOM TABLES
     add_action( 'delete_user', array( $this, 'yka_delete_user_data' ) );
 
+    // DELETE USER TOPIC(S) WHEN A TOPIC IS DELETED DIRECTLY
+    add_action( 'delete_term_taxonomy', array( $this, 'yka_delete_user_topics' ) );
+
     // DELETE POSTS WITH USER FROM CPT THAT DO NOT HAVE AN AUTHOR FIELD
     add_filter("post_types_to_delete_with_user", array( $this, "yka_post_types_to_delete_with_user" ), 10, 2);
 
@@ -108,6 +111,12 @@ class YKA_ADMIN extends YKA_BASE{
       $wpdb->query( "DELETE FROM $table WHERE ".$value['where'] );
     }
 
+  }
+
+  function yka_delete_user_topics( $tt_id ){
+    global $wpdb;
+    $user_topics_table = $wpdb->prefix.'yka_user_topics';
+    $wpdb->query( "DELETE FROM $user_topics_table WHERE `category_id` =".$tt_id );
   }
 
   function yka_post_types_to_delete_with_user( array $post_types_to_delete, $user_id ){
