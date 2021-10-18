@@ -49,6 +49,24 @@ class YKA_REST_LEARNING_CAPSULE extends YKA_REST_POST_BASE{
       }
     );
 
+    // THEME FIELD
+    $this->registerRestField(
+      'theme',
+      function( $post, $field_name, $request ){
+        $capsule_theme = (int) get_post_meta( $post['id'], $field_name, true );
+        $capsule_theme = !empty( $capsule_theme ) ? $capsule_theme : wp_rand( 1, 4 );  // REMOVE FROM PRODUCTION
+				return $capsule_theme;
+      },
+      function( $value, $post, $field_name, $request, $object_type ){
+        update_post_meta( $post->ID, $field_name, $value );
+      },
+        array(
+        'description'   => 'Theme',
+        'type'          => 'integer',
+        'context'       =>   array( 'view', 'edit' )
+      )
+    );
+
   }
 
 }
