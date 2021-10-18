@@ -23,7 +23,7 @@ class YKA_REST_LEARNING_CAPSULE extends YKA_REST_POST_BASE{
 		      $url = $img_arr[0];
 		      return $url;
 		    } else {
-		      return YKA_DEFAULT_USER_AVATAR;
+		      return null;
 		    }
 		  },
 			array(
