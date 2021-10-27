@@ -84,6 +84,16 @@ class YKA_DB_BASE extends YKA_BASE{
 		);
 	}
 
+  // DROP TABLE
+	function drop_table(){
+		$table = $this->getTable();
+		$query = "DROP TABLE IF EXISTS $table";
+		$res = $this->query( $query );
+    if( $res ){
+      echo "$table Table dropped.<br/>";
+    }
+	}
+
   // TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION
   function create(){}
 
