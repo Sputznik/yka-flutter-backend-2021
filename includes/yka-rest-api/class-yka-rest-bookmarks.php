@@ -55,7 +55,14 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
   public function get_items( $request ) {
 
     $bookmarks_db = YKA_BOOKMARKS_DB::getInstance();
-		$bookmarked_ids = $bookmarks_db->getBookmarkIDs( $request['id'] );
+
+    $user_id = $request['id'];
+
+    if( ! $this->user_id_exists($user_id) ){
+      return new WP_Error( 'rest_user_invalid_id', __('Invalid user ID.'), array( 'status' => 404 ) );
+    }
+
+		$bookmarked_ids = $bookmarks_db->getBookmarkIDs( $user_id );
 
     $args = array(
       'post_status'    => 'publish',
@@ -214,6 +221,13 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
 			'user_id'	=> get_current_user_id()
 		);
 		return $data;
+  }
+
+  // CHECKS IF USER ID EXISTS
+  function user_id_exists( $user_id ) {
+    global $wpdb;
+    $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM $wpdb->users WHERE ID = %d", $user_id ) );
+    return empty( $count ) || 1 > $count ? false : true;
   }
 
 }
