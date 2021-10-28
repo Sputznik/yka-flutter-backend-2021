@@ -60,6 +60,25 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
   			)
     	);
 
+
+
+      // BBOKMARK FIELD
+      $this->registerRestField(
+        'bookmark',
+        function( $post, $field_name, $request ){
+          $bookmarks_db = YKA_BOOKMARKS_DB::getInstance();
+          $bookmark_flag = $bookmarks_db->isBookmarked( $post['id'] );
+          if( $bookmark_flag ) return true;
+          return false;
+        },
+        array(
+         'description'   => 'Bookmark',
+         'type'          => 'boolean',
+         'context'       =>  array( 'view', 'edit' )
+        )
+      );
+
+
     }
 
   }

@@ -40,6 +40,16 @@ class YKA_BOOKMARKS_DB extends YKA_DB_BASE{
     return $result;
   }
 
+  //CHECK IF ALREADY BOOKMARKED
+	function isBookmarked( $post_id ){
+		global $wpdb;
+		$user_id = get_current_user_id();
+		$table_name = $this->getTable();
+		$rs = $wpdb->get_row( "SELECT * FROM $table_name WHERE user_id = $user_id AND post_id = $post_id" );
+		if( null != $rs ) return true;
+		return false;
+	}
+
 }
 
 YKA_BOOKMARKS_DB::getInstance();
