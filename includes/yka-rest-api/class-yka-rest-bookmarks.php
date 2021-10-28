@@ -58,11 +58,15 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
 
     $user_id = $request['id'];
 
-    if( ! $this->user_id_exists($user_id) ){
+    if( ! $this->user_id_exists( $user_id ) ){
       return new WP_Error( 'rest_user_invalid_id', __('Invalid user ID.'), array( 'status' => 404 ) );
     }
 
 		$bookmarked_ids = $bookmarks_db->getBookmarkIDs( $user_id );
+
+    if( count( $bookmarked_ids ) < 1 ){
+      return new WP_Error( 'no_bookmarks', __('No bookmark found.'), array( 'status' => 404 ) );
+    }
 
     $args = array(
       'post_status'    => 'publish',
