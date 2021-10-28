@@ -31,6 +31,15 @@ class YKA_BOOKMARKS_DB extends YKA_DB_BASE{
 		return $this->query( $sql );
 	}
 
+  // RETURNS THE ID OF A USER'S BOOKMARK
+  function getBookmarkIDs( $user_id ){
+    global $wpdb;
+    $table = $this->getTable();
+    $bookmarks_query = "SELECT post_id FROM $table WHERE user_id = $user_id;";
+    $result = array_map('intval', $wpdb->get_col( $bookmarks_query ) );
+    return $result;
+  }
+
 }
 
 YKA_BOOKMARKS_DB::getInstance();
