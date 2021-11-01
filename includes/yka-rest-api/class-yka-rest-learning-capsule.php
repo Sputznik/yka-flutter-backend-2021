@@ -67,6 +67,21 @@ class YKA_REST_LEARNING_CAPSULE extends YKA_REST_POST_BASE{
       )
     );
 
+    // CONVERSATION ID
+    $this->registerRestField(
+      'conversation_id',
+      function( $post, $field_name, $request ){
+        $ccr_db = YKA_DB_CAPSULE_CONVERSATION_RELATION::getInstance();
+        $conversation_id = $ccr_db->getConversationIDForCapsule( $post['id'] );
+        if( $conversation_id ) return (int) $conversation_id;
+        return null;
+      },
+      array(
+       'description'   => 'Conversation ID',
+       'type'          => 'integer'
+      )
+    );
+
   }
 
 }

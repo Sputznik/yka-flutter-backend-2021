@@ -43,6 +43,14 @@ class YKA_DB_CAPSULE_CONVERSATION_RELATION extends YKA_DB_BASE{
 		return $this->get_var( "SELECT capsule_id FROM $table WHERE conversation_id = $conversation_id;" );
 	}
 
+	// CHECK IF CAPSULE OR CONVERSATION ENTRIES EXIST
+	function relationExists( $conversation_id, $capsule_id ){
+		$table = $this->getTable();
+		$relationFlag = $this->get_var( "SELECT COUNT(*) FROM $table WHERE conversation_id = $conversation_id OR capsule_id = $capsule_id;" );
+		if( $relationFlag ) return true;
+		return false;
+	}
+
 }
 
 YKA_DB_CAPSULE_CONVERSATION_RELATION::getInstance();

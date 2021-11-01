@@ -49,6 +49,49 @@ class YKA_REST_CONVERSATION extends YKA_REST_POST_BASE{
       }
 	 	);
 
+    // LEARNING CAPSULE ID
+    $this->registerRestField(
+      'capsule_id',
+      function( $post, $field_name, $request ){
+        $ccr_db = YKA_DB_CAPSULE_CONVERSATION_RELATION::getInstance();
+        $capsule_id = $ccr_db->getCapsuleIDForConversation( $post['id'] );
+        if( $capsule_id ) return (int) $capsule_id;
+        return null;
+      },
+      function( $value, $post, $field_name, $request, $object_type ){
+        $ccr_db = YKA_DB_CAPSULE_CONVERSATION_RELATION::getInstance();
+
+        if( ( $value > 0 ) && ( $post->ID > 0 ) ){
+
+          $item = array(
+            'capsule_id' 		 => $value,
+            'conversation_id' => $post->ID
+          );
+
+          if( ! $ccr_db->relationExists( $post->ID, $value ) ){
+
+            // INSERT INTO RELATION DB
+            $ccr_db->insert( $item );
+
+          }
+          else{
+            return new WP_Error(
+              'cant-create',
+              __( 'Failed to add capsule ID.' ),
+              array( 'status' => 500 )
+            );
+          }
+
+        }
+
+			},
+      array(
+       'description'   => 'Capsule ID',
+       'type'          => 'integer',
+       'context'       =>  array( 'view', 'edit' )
+      )
+    );
+
   }
 
   // OPTION TO SHOW CONVERSATIONS BASED ON THE FOLLOWING LIST OF CURRENT USER
