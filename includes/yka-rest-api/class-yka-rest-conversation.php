@@ -11,14 +11,6 @@ class YKA_REST_CONVERSATION extends YKA_REST_POST_BASE{
 
     parent::addRestData();
 
-    // BOOKMARKS
-    $this->registerRestField(
-      'number_of_bookmarks',
-      function( $post, $field_name, $request ){
-				return '0';
-			}
-  	);
-
     // COMMENTS-DATA
 		$this->registerRestField(
       'comments_data',

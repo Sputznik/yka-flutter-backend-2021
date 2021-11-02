@@ -60,9 +60,7 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
   			)
     	);
 
-
-
-      // BBOKMARK FIELD
+      // BOOKMARK FIELD
       $this->registerRestField(
         'bookmark',
         function( $post, $field_name, $request ){
@@ -77,6 +75,14 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
          'context'       =>  array( 'view', 'edit' )
         )
       );
+
+      // BOOKMARK COUNT
+      $this->registerRestField(
+        'number_of_bookmarks',
+        function( $post, $field_name, $request ){
+  				return '0';
+  			}
+    	);
 
 
     }
