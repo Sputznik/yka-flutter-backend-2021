@@ -76,11 +76,13 @@ class YKA_REST_POST_BASE extends YKA_REST_BASE{
         )
       );
 
-      // BOOKMARK COUNT
+      // BOOKMARKS COUNT
       $this->registerRestField(
         'number_of_bookmarks',
         function( $post, $field_name, $request ){
-  				return '0';
+          $bookmarks_db = YKA_BOOKMARKS_DB::getInstance();
+          $total_count = $bookmarks_db->getBookmarksCount( $post['id'] );
+  				return $total_count;
   			}
     	);
 

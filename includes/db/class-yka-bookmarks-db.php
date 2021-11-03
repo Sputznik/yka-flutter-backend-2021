@@ -50,6 +50,14 @@ class YKA_BOOKMARKS_DB extends YKA_DB_BASE{
 		return false;
 	}
 
+  function getBookmarksCount( $post_id ){
+    global $wpdb;
+		$table = $this->getTable();
+    $bookmarks_query = "SELECT COUNT(user_id) FROM $table WHERE post_id = $post_id;";
+    $result = $this->get_var( $bookmarks_query );
+    return $result;
+  }
+
 }
 
 YKA_BOOKMARKS_DB::getInstance();
