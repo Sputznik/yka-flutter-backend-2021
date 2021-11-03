@@ -21,7 +21,10 @@ class YKA_ADMIN extends YKA_BASE{
     add_action( 'delete_term_taxonomy', array( $this, 'yka_delete_user_topics' ) );
 
     // DELETE POSTS WITH USER FROM CPT THAT DO NOT HAVE AN AUTHOR FIELD
-    add_filter("post_types_to_delete_with_user", array( $this, "yka_post_types_to_delete_with_user" ), 10, 2);
+    add_filter( "post_types_to_delete_with_user", array( $this, "yka_post_types_to_delete_with_user" ), 10, 2 );
+
+    // DELETE POST(S) DATA FROM CUSTOM TABLE WHEN A POST IS PERMANENTLY DELETED
+    add_filter( "delete_post", array( $this, "yka_delete_post_data" ), 10 );
 
   } // CONSTRUCT ENDS
 
@@ -104,6 +107,9 @@ class YKA_ADMIN extends YKA_BASE{
       ),
       $prefix.'yka_user_topics' => array(
         'where' => "user_id = $user_obj->ID"
+      ),
+      $prefix.'yka_bookmarks' => array(
+        'where' => "user_id = $user_obj->ID"
       )
     );
 
@@ -122,6 +128,25 @@ class YKA_ADMIN extends YKA_BASE{
   function yka_post_types_to_delete_with_user( array $post_types_to_delete, $user_id ){
     $post_types_to_delete[] = "yka-comment";
     return $post_types_to_delete;
+  }
+
+  function yka_delete_post_data( $post_id ){
+    global $wpdb;
+    $prefix = $wpdb->prefix;
+
+    $custom_post_tables = array(
+      $prefix.'yka_bookmarks' => array(
+        'where' => "post_id = $post_id"
+      ),
+      $prefix.'yka_capsule_conversation_relation' => array(
+        'where' => "capsule_id = $post_id OR conversation_id = $post_id"
+      )
+    );
+
+    foreach( $custom_post_tables as $table => $value ){
+      $wpdb->query( "DELETE FROM $table WHERE ".$value['where'] );
+    }
+
   }
 
 }
