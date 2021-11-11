@@ -54,6 +54,14 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
 	 */
   public function get_items( $request ) {
 
+		if( ! empty( $request['post_type'] ) && ! post_type_exists( $request['post_type'] ) ){
+      return new WP_Error(
+        'rest_no_route',
+        __( 'No route was found matching the URL and request method.' ),
+        array( 'status' => 404 )
+      );
+		}
+
     $bookmarks_db = YKA_BOOKMARKS_DB::getInstance();
 
     $user_id = $request['id'];
@@ -68,9 +76,11 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
       return new WP_Error( 'no_bookmarks', __('No bookmark found.'), array( 'status' => 404 ) );
     }
 
+    $default_types = array('conversation','learning-capsules');
+
     $args = array(
       'post_status'    => 'publish',
-      'post_type'      => array('conversation','learning-capsules'),
+      'post_type'      => $request['post_type'] ? $request['post_type'] : $default_types,
       'posts_per_page' => $request['per_page'],
       'paged'          => $request['page'],
       'post__in'       => $bookmarked_ids
