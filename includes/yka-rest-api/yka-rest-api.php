@@ -11,7 +11,8 @@ $inc_files = array(
 	'class-yka-rest-response.php',
 	'class-yka-rest-signup-validation.php',
 	'class-yka-rest-password-reset.php',
-	'class-yka-rest-bookmarks.php'
+	'class-yka-rest-bookmarks.php',
+	'class-yka-rest-invites.php'
 );
 
 foreach( $inc_files as $inc_file ){

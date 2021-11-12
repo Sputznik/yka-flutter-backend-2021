@@ -50,6 +50,12 @@ class YKA_DB_BASE extends YKA_BASE{
 		return $wpdb->update( $this->getTable(), $data, array( 'ID' => $id ), $format );
 	}
 
+  // UPDATE A ROW WITH A CUSTOM WHERE CLAUSE
+  function updateWhere( $data, $where, $format = array() ){
+		global $wpdb;
+		return $wpdb->update( $this->getTable(), $data, $where, $format );
+	}
+
   // DELETE SPECIFIC ROW
 	function delete_row( $ID ){
 		$table = $this->getTable();
@@ -93,6 +99,39 @@ class YKA_DB_BASE extends YKA_BASE{
       echo "$table Table dropped.<br/>";
     }
 	}
+
+  function _limit_query( $page, $per_page ){
+		$offset = ( $page - 1 ) * $per_page;
+		return " LIMIT $offset,$per_page";
+	}
+
+  function getResultsQuery( $args ){
+    return '';
+  }
+
+  function _orderby_query(){
+    return " ORDER BY post_date DESC ";
+  }
+
+  function getResults( $args ){
+    global $wpdb;
+
+    $page = isset( $args[ 'page' ]  ) ? $args[ 'page' ] : 1;
+    $per_page = isset( $args[ 'per_page' ]  ) ? $args[ 'per_page' ] : 10;
+
+    $query = $this->getResultsQuery( $args );
+    $countquery = "SELECT count(*) FROM ( $query ) history";
+    $mainquery = $query . $this->_orderby_query() . $this->_limit_query( $page, $per_page );
+    $rows = $wpdb->get_results( $mainquery );
+    $total_count = $wpdb->get_var( $countquery );
+    $total_pages = ceil( $total_count/$per_page );
+
+    return array(
+      'data'				=> $rows,
+      'total'				=> $total_count,
+      'total_pages'	=> $total_pages
+    );
+  }
 
   // TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION
   function create(){}
