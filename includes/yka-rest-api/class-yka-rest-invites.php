@@ -180,10 +180,10 @@ class YKA_REST_INVITES extends WP_REST_Controller {
 
   function prepare_item_for_response( $item, $request ){
     return array(
-      'invitee_id'  => $item->invitee_id,
+      'invitee_id'  => (int) $item->invitee_id,
       'invite_link' => $item->invite_link,
-      'new_user_id' => $item->new_user_id,
-      'created_on'  => $item->post_date,
+      'new_user_id' => $item->new_user_id ? (int) $item->new_user_id : null,
+      'created_on'  => mysql_to_rfc3339( $item->post_date )
     );
 	}
 
