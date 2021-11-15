@@ -68,6 +68,12 @@ class YKA_DB_INVITE extends YKA_DB_BASE{
 		return $query;
 	}
 
+  function getInvitesCount( $user_id ){
+    $table = $this->getTable();
+    $query = "SELECT COUNT(*) FROM $table WHERE invitee_id = $user_id;";
+    return (int) $this->get_var( $query );
+  }
+
 }
 
 YKA_DB_INVITE::getInstance();

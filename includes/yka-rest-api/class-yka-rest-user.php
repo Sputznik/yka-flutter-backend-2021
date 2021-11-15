@@ -160,6 +160,16 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
       )
     );
 
+    // INVITE COUNT FIELD
+    $this->registerRestField(
+      'invites',
+      function( $post, $field_name, $request ){
+        $invites_db = YKA_DB_INVITE::getInstance();
+        return $invites_db->getInvitesCount( $post['id'] );
+      }
+    );
+
+
   }
 
   // OPTION TO SHOW USERS BASED on following or followers parameter
