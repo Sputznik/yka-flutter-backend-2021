@@ -55,7 +55,7 @@ class YKA_BOOKMARKS_DB extends YKA_DB_BASE{
 		$table = $this->getTable();
     $bookmarks_query = "SELECT COUNT(user_id) FROM $table WHERE post_id = $post_id;";
     $result = $this->get_var( $bookmarks_query );
-    return $result;
+    return (int) $result;
   }
 
 }
