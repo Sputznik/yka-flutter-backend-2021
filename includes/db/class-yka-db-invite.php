@@ -8,7 +8,6 @@ class YKA_DB_INVITE extends YKA_DB_BASE{
     $this->setTableSlug( 'invites' );
     parent::__construct();
 
-    $this->alter_table();
   }
 
   function create(){
@@ -23,6 +22,7 @@ class YKA_DB_INVITE extends YKA_DB_BASE{
       invitee_id BIGINT(20) UNSIGNED NOT NULL,
       invite_link VARCHAR(255) NOT NULL,
       new_user_id BIGINT(20) UNSIGNED NULL,
+      timestamp BIGINT(20) UNSIGNED NOT NULL,
       created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY(ID),
       FOREIGN KEY (invitee_id) REFERENCES $users_table,
@@ -33,12 +33,12 @@ class YKA_DB_INVITE extends YKA_DB_BASE{
 
   }
 
-  function alter_table(){
-		$table = $this->getTable();
-  	$sql = "ALTER TABLE $table ADD `timestamp` BIGINT(20) UNSIGNED NOT NULL AFTER `new_user_id`;";
-		echo "Added timestamp columm in $table <br>";
-		return $this->query( $sql );
-	}
+  // function alter_table(){
+	// 	$table = $this->getTable();
+  // 	$sql = "ALTER TABLE $table ADD `timestamp` BIGINT(20) UNSIGNED NOT NULL AFTER `new_user_id`;";
+	// 	echo "Added timestamp columm in $table <br>";
+	// 	return $this->query( $sql );
+	// }
 
   // CHECK IF USER HAS ALREADY JOINED
   function hasUserAlreadyJoined( $new_user_id, $invite_link ){
