@@ -43,7 +43,7 @@ class YKA_DB_INVITE extends YKA_DB_BASE{
   // CHECK IF USER HAS ALREADY JOINED
   function hasUserAlreadyJoined( $new_user_id, $invite_link ){
     global $wpdb;
-		$table_name = $this->getTable( $invite_link );
+		$table_name = $this->getTable();
     $link_expired = (int) $this->get_var( "SELECT COUNT(new_user_id) FROM $table_name WHERE invite_link = '$invite_link';" );
 
     if( ! $link_expired ){
