@@ -26,6 +26,11 @@ class YKA_REST_INVITES extends WP_REST_Controller {
             'description'   => 'Invite Link',
             'type'          => 'String',
             'required'      => true
+          ),
+          'timestamp' =>  array(
+            'description'   => 'Timestamp',
+            'type'          => 'integer',
+            'required'      => true
           )
         ),
       ),
@@ -40,6 +45,11 @@ class YKA_REST_INVITES extends WP_REST_Controller {
           ),
           'new_user_id' =>  array(
             'description'   => 'ID of the new user',
+            'type'          => 'integer',
+            'required'      => true
+          ),
+          'timestamp' =>  array(
+            'description'   => 'Timestamp',
             'type'          => 'integer',
             'required'      => true
           )
@@ -94,6 +104,7 @@ class YKA_REST_INVITES extends WP_REST_Controller {
 		}
 
     $item = $this->prepare_item_for_database( $request );
+
 		$invites_db = YKA_DB_INVITE::getInstance();
 
     if( ! $invites_db->inviteExists( $item['invitee_id'], $item['invite_link'] ) ){
@@ -120,16 +131,19 @@ class YKA_REST_INVITES extends WP_REST_Controller {
 	 */
 	public function update_item( $request ) {
     $item = $this->prepare_item_for_database( $request );
-
     $invites_db = YKA_DB_INVITE::getInstance();
-
     $errors = $this->checkNewUser( $item['new_user_id'],  $item['invite_link'] );
 
     if( !empty( $errors ) ){
       return $errors;
     }
 
-    $update_invite = $invites_db->updateWhere( array( 'new_user_id' => $item['new_user_id'] ), array( 'invite_link' => $item['invite_link'] ) );
+    $args = array(
+      'new_user_id' => $item['new_user_id'],
+      'timestamp'   => $item['timestamp']
+    );
+
+    $update_invite = $invites_db->updateWhere( $args, array( 'invite_link' => $item['invite_link'] ) );
 
     if( $update_invite ){
       return new WP_REST_Response( $item, 200 );
@@ -168,7 +182,8 @@ class YKA_REST_INVITES extends WP_REST_Controller {
   protected function prepare_item_for_database( $request ) {
     $data = array(
       'invitee_id'	=> get_current_user_id(),
-      'invite_link' => $request['invite_link']
+      'invite_link' => $request['invite_link'],
+      'timestamp'   => $request['timestamp']
 		);
 
     if( ! empty( $request['new_user_id'] ) ){
@@ -183,6 +198,7 @@ class YKA_REST_INVITES extends WP_REST_Controller {
       'invitee_id'  => (int) $item->invitee_id,
       'invite_link' => $item->invite_link,
       'new_user_id' => $item->new_user_id ? (int) $item->new_user_id : null,
+      'timestamp'   => (int) $item->timestamp,
       'created_on'  => mysql_to_rfc3339( $item->post_date )
     );
 	}

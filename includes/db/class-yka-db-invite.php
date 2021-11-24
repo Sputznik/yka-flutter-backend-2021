@@ -43,7 +43,7 @@ class YKA_DB_INVITE extends YKA_DB_BASE{
   // CHECK IF USER HAS ALREADY JOINED
   function hasUserAlreadyJoined( $new_user_id, $invite_link ){
     global $wpdb;
-		$table_name = $this->getTable();
+		$table_name = $this->getTable( $invite_link );
     $link_expired = (int) $this->get_var( "SELECT COUNT(new_user_id) FROM $table_name WHERE invite_link = '$invite_link';" );
 
     if( ! $link_expired ){
@@ -67,12 +67,22 @@ class YKA_DB_INVITE extends YKA_DB_BASE{
 
   function getResultsQuery( $args ){
 		$table = $this->getTable();
-		$query = "SELECT invitee_id, invite_link, new_user_id, created_on as post_date FROM $table";
+    $filter_query = array();
+    $default_filters = array( 'invitee_id','invite_link' );
+		$query = "SELECT invitee_id, invite_link, new_user_id, timestamp, created_on as post_date FROM $table";
 
-    if( isset( $args['invitee_id'] ) && $args['invitee_id'] ){
-			$invitee_id = $args['invitee_id'];
-			$query .= " WHERE invitee_id=$invitee_id";
-		}
+    // LOOP THROUGH FILTER PARAMS IF ANY TO GET RESULTS BY INVITEE ID, INVITE_LINK
+    foreach ( $default_filters as $filter ){
+			if( isset( $args[$filter] ) && $args[$filter] ){
+        $str = "$filter="."'".$args[$filter]."'";
+        array_push( $filter_query, $str );
+      }
+    }
+
+    if( count( $filter_query ) > 0 ){
+      $query .= " WHERE ".implode(" AND ", $filter_query);
+    }
+
 		return $query;
 	}
 
