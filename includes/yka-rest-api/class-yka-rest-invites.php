@@ -39,10 +39,6 @@ class YKA_REST_INVITES extends WP_REST_Controller {
         'callback'            => array( $this, 'update_item' ),
         'permission_callback' => array( $this, 'update_item_permissions_check' ),
         'args'                => array(
-          'invite_link' =>  array(
-            'description'   => 'Invite Link',
-            'required'      => true
-          ),
           'new_user_id' =>  array(
             'description'   => 'ID of the new user',
             'type'          => 'integer',
@@ -132,18 +128,17 @@ class YKA_REST_INVITES extends WP_REST_Controller {
 	public function update_item( $request ) {
     $item = $this->prepare_item_for_database( $request );
     $invites_db = YKA_DB_INVITE::getInstance();
-    $errors = $this->checkNewUser( $item['new_user_id'],  $item['invite_link'] );
+    $errors = $this->checkNewUser( $item['new_user_id'],  $item['timestamp'] );
 
     if( !empty( $errors ) ){
       return $errors;
     }
 
     $args = array(
-      'new_user_id' => $item['new_user_id'],
-      'timestamp'   => $item['timestamp']
+      'new_user_id' => $item['new_user_id']
     );
 
-    $update_invite = $invites_db->updateWhere( $args, array( 'invite_link' => $item['invite_link'] ) );
+    $update_invite = $invites_db->updateWhere( $args, array( 'timestamp' => $item['timestamp'] ) );
 
     if( $update_invite ){
       return new WP_REST_Response( $item, 200 );
@@ -182,9 +177,12 @@ class YKA_REST_INVITES extends WP_REST_Controller {
   protected function prepare_item_for_database( $request ) {
     $data = array(
       'invitee_id'	=> get_current_user_id(),
-      'invite_link' => $request['invite_link'],
       'timestamp'   => $request['timestamp']
 		);
+
+    if( ! empty( $request['invite_link'] ) ){
+      $data['invite_link'] = $request['invite_link'];
+    }
 
     if( ! empty( $request['new_user_id'] ) ){
       $data['new_user_id'] = $request['new_user_id'];
@@ -203,12 +201,12 @@ class YKA_REST_INVITES extends WP_REST_Controller {
     );
 	}
 
-  function checkNewUser( $new_user, $invite_link ){
+  function checkNewUser( $new_user, $timestamp ){
 
     $invites_db = YKA_DB_INVITE::getInstance();
 
     // THROW ERROR IF ALREADY JOINED
-    if( ! $invites_db->hasUserAlreadyJoined( $new_user, $invite_link ) ){
+    if( ! $invites_db->hasUserAlreadyJoined( $new_user, $timestamp ) ){
 
       $user_obj = get_userdata( $new_user );
 
