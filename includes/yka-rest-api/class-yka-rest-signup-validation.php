@@ -16,7 +16,7 @@ class YKA_REST_SIGNUP_VALIDATION extends YKA_REST_BASE{
   }
 
   function addRestData(){
-		$this->registerRoute( 'signup_validation', array( $this, 'signupValidationCallback' ) );
+		$this->registerRoute( 'username_validation', array( $this, 'signupValidationCallback' ) );
 	}
 
 }
