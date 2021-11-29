@@ -26,7 +26,8 @@ $inc_files = array(
   'includes/yka-admin/yka-admin.php',														   // ADMIN MODULES
   'includes/yka-rest-authentication/yka-rest-authentication.php',  // AUTHENTICATION
   'includes/yka-rest-api/yka-rest-api.php',											  // REST API
-  'includes/db/db.php'                                            // DB
+  'includes/db/db.php',                                           // DB
+  'includes/lib/lib.php',
 );
 
 

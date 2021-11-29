@@ -1,9 +1,11 @@
 <?php
 /*
 Plugin Name: Flutter Authentication
+Plugin URI: https://sputznik.com/
 Description: A simple plugin for flutter authentication
 Version: 1.0.0
-Author: Samuel Thomas
+Author: Stephen Anil, Sputznik
+Author URI: https://sputznik.com/
 Text Domain: flutter-auth
 */
 
@@ -75,6 +77,7 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
     $display_name = sanitize_text_field( $parameters['display_name'] );
     $user_phone   = $parameters['user_phone'];
     $user_topics  = explode(',', $parameters['user_topics'] );
+    $yka_util = YKA_WP_UTIL::getInstance();
 
   	$error = new WP_Error();
   	if ( empty( $username ) ) {
@@ -116,6 +119,11 @@ class YKA_REST_AUTHENTICATION extends YKA_BASE{
         $error->add( 404, __( "Invalid phone number.", 'wp-rest-user'), array( 'status' => 400 ) );
     		return $error;
       }
+  	}
+
+    if ( $yka_util->yka_userphone_exists( $user_phone ) ) {
+  		$error->add( 406, __("User phone number already exists", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
   	}
 
   	$user_id = username_exists( $username );
