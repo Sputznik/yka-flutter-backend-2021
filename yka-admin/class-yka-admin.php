@@ -72,7 +72,7 @@ class YKA_ADMIN extends YKA_BASE{
     if( $hook != 'edit.php' && $hook != 'post.php' && $hook != 'post-new.php' )
       return;
 
-    $uri = YKA_URI.'includes/yka-admin/assets/';
+    $uri = YKA_URI.'yka-admin/assets/';
 
     wp_register_style( 'yka-admin', $uri.'style.css', array(), YKA_VERSION );
     wp_enqueue_style('yka-admin');

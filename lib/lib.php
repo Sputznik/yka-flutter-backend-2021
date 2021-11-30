@@ -1,6 +1,7 @@
 <?php
 
 $inc_files = array(
+  'class-yka-flutter-backend.php',
   'class-yka-wp-util.php'
 );
 
