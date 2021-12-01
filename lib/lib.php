@@ -2,7 +2,8 @@
 
 $inc_files = array(
   'class-yka-flutter-backend.php',
-  'class-yka-wp-util.php'
+  'class-yka-wp-util.php',
+  'email-notifications/email-notifications.php'
 );
 
 foreach( $inc_files as $inc_file ){
