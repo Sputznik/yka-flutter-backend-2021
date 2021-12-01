@@ -12,7 +12,7 @@ class YKA_WP_UTIL extends YKA_BASE{
     if( $userphone ){
       global $wpdb;
       $usermeta_table = $wpdb->prefix.'usermeta';
-      $query = "SELECT COUNT(user_id) FROM $usermeta_table WHERE meta_key = 'user_phone' AND meta_value = '$userphone';";
+      $query = "SELECT COUNT(user_id) FROM $usermeta_table WHERE meta_key = 'user_phone' AND meta_value = $userphone;";
       $res = (int) $wpdb->get_var( $query );
       return ( $res > 0 ) ? true : false;
     }
