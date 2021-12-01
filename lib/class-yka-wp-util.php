@@ -25,7 +25,7 @@ class YKA_WP_UTIL extends YKA_BASE{
     if( $userphone ){
       global $wpdb;
       $usermeta_table = $wpdb->prefix.'usermeta';
-      $query = "SELECT user_id FROM $usermeta_table WHERE meta_key = 'user_phone' AND meta_value = '$userphone';";
+      $query = "SELECT user_id FROM $usermeta_table WHERE meta_key = 'user_phone' AND meta_value = $userphone;";
       $user_id = (int) $wpdb->get_var( $query );
       return get_the_author_meta( 'user_login', $user_id );
     }
