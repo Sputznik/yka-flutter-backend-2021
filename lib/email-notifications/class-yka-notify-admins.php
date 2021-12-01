@@ -22,10 +22,10 @@ class YKA_NOTIFY_ADMINS extends YKA_BASE{
     $site_name = get_bloginfo( 'name' );
     $subject = " Report Notification From " . $site_name;
     $email_details = get_option( 'yka_settings');
-    $to_mail = isset( $email_details['email_to_address'] ) ? $email_details['email_to_address'] : '';;
+    $to_mail = isset( $email_details['email_to_address'] ) ? $email_details['email_to_address'] : '';
 
     $header = array(
-      'Content-Type: text/html; charset=UTF-8',
+      'Content-Type: text/html; charset=UTF-8'
     );
 
     $response = wp_mail( $to_mail, $subject, $body, $header );
