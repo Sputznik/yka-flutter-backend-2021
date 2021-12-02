@@ -34,7 +34,7 @@ class YKA_REST_RESPONSE extends YKA_BASE{
         'author',
         'slug',
         'link',
-        'type',
+        // 'type',
         'status',
         'password',
         'generated_slug',

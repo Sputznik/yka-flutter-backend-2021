@@ -80,7 +80,7 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
 
     $args = array(
       'post_status'    => 'publish',
-      'post_type'      => $request['post_type'] ? $request['post_type'] : $default_types,
+      'post_type'      => $request['type'] ? $request['type'] : $default_types,
       'posts_per_page' => $request['per_page'],
       'paged'          => $request['page'],
       'post__in'       => $bookmarked_ids
@@ -103,8 +103,11 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
     $data = array();
 
     foreach ( $posts as $post ) {
-      $response = $this->prepare_item_for_response( $post, $request );
-      $data[] = $this->prepare_response_for_collection( $response );
+      $posts_controller = new WP_REST_Posts_Controller($post->post_type);
+
+      /* PREPARES A SINGLE POST OUTPUT FOR RESPONSE */
+      $response  = $posts_controller->prepare_item_for_response($post, $request);
+      $data[]   = $posts_controller->prepare_response_for_collection($response);
     }
 
     // SET HEADERS AND RETURN RESPONSE
@@ -115,29 +118,6 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
     return $response;
 
 	}
-
-  /**
-  * Prepares post data for return as an object.
-  */
-  function prepare_item_for_response( $post, $request ){
-
-    $author_id = $post->post_author;
-    $user_avatar = get_the_author_meta( 'user_display_picture', $author_id );
-
-    return array(
-      'id'      =>  $post->ID,
-      'date'    =>  $this->prepare_date_response( $post->post_date_gmt, $post->post_date ),
-      'post_type' => $post->post_type,
-      'title'   =>  $post->post_title,
-      'content' =>  $post->post_content,
-      'author_data' => array(
-        'id'      => $author_id,
-        'name'    => get_the_author_meta( 'display_name', $author_id ),
-        'avatar'  => !empty( $user_avatar ) ? $user_avatar : YKA_DEFAULT_USER_AVATAR
-      )
-    );
-
-  }
 
   /**
    * Create one item from the collection
@@ -196,31 +176,6 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
    */
   public function delete_item_permissions_check( $request ) {
 		return $this->create_item_permissions_check( $request );
-  }
-
-  /**
-   * Checks the post_date_gmt or modified_gmt and prepare any post or
-   * modified date for single post output.
-   *
-   * @since 4.7.0
-   *
-   * @param string      $date_gmt GMT publication time.
-   * @param string|null $date     Optional. Local publication time. Default null.
-   * @return string|null ISO8601/RFC3339 formatted datetime.
-   */
-  protected function prepare_date_response( $date_gmt, $date = null ) {
-    // Use the date if passed.
-    if ( isset( $date ) ) {
-      return mysql_to_rfc3339( $date );
-    }
-
-    // Return null if $date_gmt is empty/zeros.
-    if ( '0000-00-00 00:00:00' === $date_gmt ) {
-      return null;
-    }
-
-    // Return the formatted datetime.
-    return mysql_to_rfc3339( $date_gmt );
   }
 
   /**
