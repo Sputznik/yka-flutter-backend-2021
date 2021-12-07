@@ -169,6 +169,60 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
       }
     );
 
+    // USER DEVICE DETAILS
+    $this->registerRestField(
+      'user_device_details',
+      function( $post, $field_name, $request ){
+        $user_device_db = YKA_DB_USER_DEVICE_DETAILS::getInstance();
+        return $user_device_db->getUserDeviceDetails( get_current_user_id() );
+      },
+      function( $value, $post, $field_name, $request, $object_type ){
+
+        $device_details = $request['user_device_details'];
+
+        if( !$device_details['fcm_token'] ){
+          return new WP_Error(
+            'rest_property_required',
+            __( 'fcm_token is a required property of user_device_details.' ),
+            array( 'param' => 'user_device_details[fcm_token]', 'status' => 400 )
+          );
+        }
+
+        $user_device_db = YKA_DB_USER_DEVICE_DETAILS::getInstance();
+
+        $item = array(
+          'user_id'       => get_current_user_id(),
+          'fcm_token'     => $device_details['fcm_token'],
+          'login_status'  => $device_details['login_status'] ? 1 : 0
+        );
+
+        if( !$user_device_db->fcmTokenExists( $item['fcm_token'], $item['user_id'] ) ){
+          // INSERT INTO DB IF TOKEN DOES NOT EXISTS
+          $user_device_db->insert( $item );
+        }
+        else{
+          // UPDATE LOGIN STATUS OF A USER BASED ON FCM TOKEN
+          $user_device_db->updateWhere(
+            array( 'login_status' => $item['login_status'] ),
+            array( 'user_id' => $item['user_id'], 'fcm_token' => $item['fcm_token'] )
+          );
+        }
+      },
+      array(
+        'type'       => 'object',
+        'properties' => array(
+          'fcm_token'  => array(
+            'type' => 'string',
+            'required'  =>  true
+          ),
+          'login_status' => array(
+            'type'   => 'boolean',
+            'required'  =>  true
+          ),
+        ),
+      )
+    );
+
 
   }
 
