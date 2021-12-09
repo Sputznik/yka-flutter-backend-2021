@@ -6,6 +6,9 @@ class YKA_REST_LEARNING_CAPSULE extends YKA_REST_POST_BASE{
 
     $this->setPostType( 'learning-capsules' );
 
+    // REORDER SLIDES
+    add_action( 'rest_api_init', array( $this, 'reorderSlides' ) );
+
     parent::__construct();
   }
 
@@ -81,6 +84,54 @@ class YKA_REST_LEARNING_CAPSULE extends YKA_REST_POST_BASE{
        'type'          => 'integer'
       )
     );
+
+  }
+
+  function reorderSlides(){
+    register_rest_route('yka/v1', 'reorder_slides', array(
+      'methods' => 'POST',
+      'callback' => array( $this, 'reorderSlidesCallback' ),
+      'permission_callback' => function( $request ){
+        return current_user_can( 'edit_posts' );
+      },
+      'args'                => array(
+        'slide_ids' =>  array(
+          'description'   => 'Slide Ids',
+          'type'          => 'array',
+          'items'         =>  array(
+            'type' =>  'integer'
+          )
+        )
+      )
+    )	);
+  }
+
+  function reorderSlidesCallback( $request ){
+
+    $slide_ids = $request['slide_ids'];
+
+    if( !count( $slide_ids ) > 0 ){
+      return new WP_Error(
+        'rest_property_required',
+        __( 'slide_ids is a required property.' ),
+        array( 'param' => 'slide_ids is a required property.', 'status' => 400 )
+      );
+    }
+
+    $index = 1;
+    foreach( $slide_ids as $slide_id ){
+      $attachment = array(
+        'ID'          =>  $slide_id,
+        'menu_order'  =>  $index
+      );
+
+      // UPDATE ATTACHMENT MENU ORDER
+      wp_update_post( $attachment );
+
+      $index++;
+    }
+
+    return new WP_REST_Response( array( 'message' => "The slides have been reordered successfully.", 'status' => 200 ) );
 
   }
 
