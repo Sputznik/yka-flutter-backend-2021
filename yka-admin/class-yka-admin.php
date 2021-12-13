@@ -113,6 +113,9 @@ class YKA_ADMIN extends YKA_BASE{
       ),
       $prefix.'yka_invites' => array(
         'where' => "invitee_id = $user_obj->ID OR new_user_id = $user_obj->ID"
+      ),
+      $prefix.'yka_user_device_details' => array(
+        'where' => "user_id = $user_obj->ID"
       )
     );
 
