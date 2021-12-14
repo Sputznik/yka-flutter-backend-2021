@@ -75,17 +75,16 @@ class YKA_REST_PASSWORD_RESET extends YKA_REST_BASE{
   	}
 
     if ( ! wp_check_password( $password , $user->user_pass, $user->ID ) ) {
-      $error->add( 'incorrect_password', sprintf(
-        __( 'The password you entered for the username %s is incorrect.' ), $user->user_login ), array( 'status' => 400 )
+      return new WP_REST_Response(
+        array(
+          'valid'    => false
+        )
       );
-      return $error;
     }
 
     return new WP_REST_Response(
       array(
-        'code'    => 'correct_password',
-        'message' => sprintf( __( 'The password you entered for the username %s is correct.' ), $user->user_login ),
-        'data'  => array( 'status'=>200 )
+        'valid'    => true
       )
     );
 
