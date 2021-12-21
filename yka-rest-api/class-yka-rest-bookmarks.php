@@ -128,11 +128,14 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
   public function create_item( $request ) {
     $item = $this->prepare_item_for_database( $request );
 		$bookmarks_db = YKA_BOOKMARKS_DB::getInstance();
-		$insert_id = $bookmarks_db->insert( $item );
+    // INSERT IF THERE ARE NO PREVIOUS ENTRIES
+    if( ! $bookmarks_db->isBookmarked( $item['post_id'] ) ){
+      $insert_id = $bookmarks_db->insert( $item );
+      if( $insert_id ){
+        return new WP_REST_Response( $item, 200 );
+  		}
+    }
 
-    if( $insert_id ){
-      return new WP_REST_Response( $item, 200 );
-		}
 		return new WP_Error( 'cant-create', __( 'message', 'text-domain' ), array( 'status' => 500 ) );
   }
 
