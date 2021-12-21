@@ -73,7 +73,8 @@ class YKA_REST_BOOKMARKS extends WP_REST_Controller {
 		$bookmarked_ids = $bookmarks_db->getBookmarkIDs( $user_id );
 
     if( count( $bookmarked_ids ) < 1 ){
-      return new WP_Error( 'no_bookmarks', __('No bookmark found.'), array( 'status' => 404 ) );
+      // return new WP_Error( 'no_bookmarks', __('No bookmark found.'), array( 'status' => 404 ) );
+      return [];
     }
 
     $default_types = array('conversation','learning-capsules');
