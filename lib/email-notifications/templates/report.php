@@ -3,17 +3,13 @@
 // $post_id      = $data['post_id'];
 $post_title   = $data['post_title'];
 $post_author  = $data['post_author'];
+$post_type    = get_post_type( $data['post_id'] );
 $current_user = $data['current_user'];
 $reason       = $data['reason'];
+$settings     = get_option('yka_settings');
+$email_content = isset( $settings['emails']['report']['email_body'] ) ? $settings['emails']['report']['email_body'] : '';
 
+eval("\$email_content = \"$email_content\";");
+
+echo $email_content;
 ?>
-<p><?php echo $current_user; ?> has reported a post.</p>
-<p>
-  <strong>Details:</strong>
-  <br/>
-  Post Author: <?php echo $post_author; ?>
-  <br/>
-  Post Title: <?php echo $post_title; ?>
-  <br/>
-  Reason: <?php echo $reason; ?>
-</p>

@@ -20,9 +20,11 @@ class YKA_NOTIFY_ADMINS extends YKA_BASE{
 
   function sendEmail( $body ){
     $site_name = get_bloginfo( 'name' );
-    $subject = " Report Notification From " . $site_name;
-    $email_details = get_option( 'yka_settings');
-    $to_mail = isset( $email_details['email_to_address'] ) ? $email_details['email_to_address'] : '';
+    $settings  = get_option( 'yka_settings');
+    $subject = isset( $settings['emails']['report']['email_subject'] ) ? $settings['emails']['report']['email_subject'] : "Report Notification From " . $site_name;
+    $to_mail = isset( $settings['emails']['report']['email_to_address'] ) ? $settings['emails']['report']['email_to_address'] : '';
+
+    eval("\$subject = \"$subject\";");
 
     $header = array(
       'Content-Type: text/html; charset=UTF-8'

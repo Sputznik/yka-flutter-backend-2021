@@ -46,11 +46,13 @@ class YKA_REST_REPORT extends WP_REST_Controller {
 		}
 
     $data = $this->prepare_item_for_response( $post, $request );
+    $settings = get_option( 'yka_settings' );
+    $rest_api_msg = isset( $settings['emails']['report']['rest_response'] ) ? $settings['emails']['report']['rest_response'] : "Post has been reported successfully.";
 
     // REPORT POST
     do_action( 'yka_report_post', $data );
 
-    return new WP_REST_Response( array( 'message' => "Post has been reported successfully.", status => 200 ) );
+    return new WP_REST_Response( array( 'message' => $rest_api_msg, 'status' => 200 ) );
 
   }
 
