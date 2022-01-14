@@ -178,39 +178,49 @@ class YKA_REST_YKA_USER extends YKA_REST_POST_BASE{
       },
       function( $value, $post, $field_name, $request, $object_type ){
 
+        $error = new WP_Error();
         $device_details = $request['user_device_details'];
 
-        if( !$device_details['fcm_token'] ){
-          return new WP_Error(
-            'rest_property_required',
-            __( 'fcm_token is a required property of user_device_details.' ),
-            array( 'param' => 'user_device_details[fcm_token]', 'status' => 400 )
-          );
+        if ( !$device_details['device_id'] ) {
+          $error->add( 'rest_property_required', __( 'device_id is a required property of user_device_details.' ),
+                      array( 'param' => 'user_device_details[device_id]', 'status' => 400 ) );
+          return $error;
+        }
+        if ( !$device_details['fcm_token'] ) {
+          $error->add( 'rest_property_required', __( 'fcm_token is a required property of user_device_details.' ),
+                       array( 'param' => 'user_device_details[fcm_token]', 'status' => 400 ) );
+          return $error;
         }
 
         $user_device_db = YKA_DB_USER_DEVICE_DETAILS::getInstance();
 
         $item = array(
           'user_id'       => get_current_user_id(),
+          'device_id'     => $device_details['device_id'],
           'fcm_token'     => $device_details['fcm_token'],
           'login_status'  => $device_details['login_status'] ? 1 : 0
         );
 
-        if( !$user_device_db->fcmTokenExists( $item['fcm_token'], $item['user_id'] ) ){
-          // INSERT INTO DB IF TOKEN DOES NOT EXISTS
+        if( !$user_device_db->deviceIDExists( $item['device_id'], $item['user_id'] ) ){
+          // INSERT INTO DB IF DEVICE ID DOES NOT EXISTS
           $user_device_db->insert( $item );
         }
+
         else{
-          // UPDATE LOGIN STATUS OF A USER BASED ON FCM TOKEN
+          // UPDATE FCM TOKEN AND LOGIN STATUS OF A USER BASED ON DEVICE ID
           $user_device_db->updateWhere(
-            array( 'login_status' => $item['login_status'] ),
-            array( 'user_id' => $item['user_id'], 'fcm_token' => $item['fcm_token'] )
+            array( 'fcm_token' => $item['fcm_token'], 'login_status' => $item['login_status'] ),
+            array( 'user_id' => $item['user_id'], 'device_id' => $item['device_id'] )
           );
         }
       },
       array(
         'type'       => 'object',
         'properties' => array(
+          'device_id'  => array(
+            'type' => 'string',
+            'required'  =>  true
+          ),
           'fcm_token'  => array(
             'type' => 'string',
             'required'  =>  true
