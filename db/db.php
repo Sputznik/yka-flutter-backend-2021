@@ -8,7 +8,8 @@
 		'class-yka-db-follow-users.php',
 		'class-yka-db-capsule-conversation-relation.php',
 		'class-yka-db-invite.php',
-		'class-yka-db-user-device-details.php'
+		'class-yka-db-user-device-details.php',
+		'class-yka-db-notifications.php'
 	);
 
 	foreach( $inc_files as $inc_file ){
